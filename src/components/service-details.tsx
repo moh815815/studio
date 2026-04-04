@@ -10,9 +10,11 @@ import {
   Phone,
   QrCode,
   Star,
+  Clock,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import {
   Dialog,
   DialogContent,
@@ -49,6 +51,20 @@ function StarRating({ rating }: { rating: number }) {
   );
 }
 
+function StatusBadge({ status }: { status: ServiceDetailsProps['service']['status'] }) {
+    if (!status) return null;
+
+    const statusMap = {
+        available: { text: 'متاح الآن', className: 'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/50 dark:text-green-300 dark:border-green-700' },
+        busy: { text: 'مشغول', className: 'bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900/50 dark:text-yellow-300 dark:border-yellow-700' },
+        unavailable: { text: 'غير متاح', className: 'bg-red-100 text-red-800 border-red-200 dark:bg-red-900/50 dark:text-red-300 dark:border-red-700' },
+    };
+
+    const currentStatus = statusMap[status];
+
+    return <Badge className={currentStatus.className}><Clock className="h-3 w-3 me-1.5"/>{currentStatus.text}</Badge>;
+}
+
 type ServiceDetailsProps = {
   service: NonNullable<ReturnType<typeof getServiceById>>,
   region: Region,
@@ -63,6 +79,9 @@ export default function ServiceDetails({ service, region, category }: ServiceDet
   }, []);
 
   const shareText = `مرحبا، أود مشاركة تفاصيل هذا المحل معك:\n\n*${service.name}*\n\n*العنوان:* ${service.address}\n*المنطقة:* ${service.regionName}\n\n*رابط على دليل فيصل الذكي:*\n${pageUrl}`;
+  const whatsappMessage = encodeURIComponent('السلام عليكم، أريد الاستفسار عن خدمة صيانة من دليل فيصل');
+  const isMobile = service.phone.startsWith('01') && service.phone.length === 11;
+  const whatsappPhoneNumber = isMobile ? '2' + service.phone : service.phone;
 
   const handleDownloadQr = async () => {
     if (!pageUrl) return;
@@ -105,9 +124,10 @@ export default function ServiceDetails({ service, region, category }: ServiceDet
             <h1 className="font-headline text-4xl font-bold text-primary md:text-5xl">
               {service.name}
             </h1>
-            <div className="mt-2 flex items-center justify-center gap-4">
+            <div className="mt-3 flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
                 <p className="text-lg text-muted-foreground">{category.name} في {region.name}</p>
                 <StarRating rating={service.rating} />
+                <StatusBadge status={service.status} />
             </div>
           </div>
         </header>
@@ -119,27 +139,37 @@ export default function ServiceDetails({ service, region, category }: ServiceDet
                         <div className="space-y-4">
                             <div>
                                 <h3 className="font-bold text-lg mb-2 flex items-center gap-2"><MapPin className="text-primary"/> العنوان</h3>
-                                <p className="text-muted-foreground ms-6">{service.address}</p>
+                                <p className="text-muted-foreground ms-8">{service.address}</p>
                             </div>
                             <div>
                                 <h3 className="font-bold text-lg mb-2 flex items-center gap-2"><Phone className="text-primary"/> للتواصل</h3>
-                                <a href={`tel:${service.phone}`} className="text-muted-foreground ms-6 text-lg tracking-wider font-semibold hover:text-primary" dir="ltr">{service.phone}</a>
+                                <a href={`tel:${service.phone}`} className="text-muted-foreground ms-8 text-lg tracking-wider font-semibold hover:text-primary" dir="ltr">{service.phone}</a>
                             </div>
                         </div>
                     </div>
-                     <div className="flex md:flex-col gap-3 justify-center">
-                        <Button asChild className="w-full">
-                            <a href={service.mapUrl} target="_blank" rel="noopener noreferrer">
-                                <MapPin />
-                                <span>الموقع على الخريطة</span>
-                            </a>
-                        </Button>
+                     <div className="flex flex-col gap-3 justify-center shrink-0 w-full md:w-48">
+                        {service.mapUrl && service.mapUrl !== '#' && (
+                            <Button asChild className="w-full">
+                                <a href={service.mapUrl} target="_blank" rel="noopener noreferrer">
+                                    <MapPin />
+                                    <span>الموقع على الخريطة</span>
+                                </a>
+                            </Button>
+                        )}
                         <Button asChild variant="outline" className="w-full">
                            <a href={`tel:${service.phone}`}>
                                 <Phone />
                                 <span>اتصال</span>
                             </a>
                         </Button>
+                        {isMobile && (
+                            <Button asChild className="w-full bg-green-600 hover:bg-green-700 text-white">
+                               <a href={`https://wa.me/${whatsappPhoneNumber}?text=${whatsappMessage}`} target="_blank" rel="noopener noreferrer">
+                                    <WhatsAppIcon />
+                                    <span>تواصل واتساب</span>
+                                </a>
+                            </Button>
+                        )}
                     </div>
                 </div>
             </CardContent>
