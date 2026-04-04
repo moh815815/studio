@@ -4,19 +4,22 @@ import { getRegionById, getCategoryById, getServicesForCategory } from '@/lib/da
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Building2 } from 'lucide-react';
 import ShopCard from '@/components/shop-card';
+import PaginationControls from '@/components/pagination-controls';
 
 type Props = {
   params: { region: string; category: string };
+  searchParams: { [key: string]: string | string[] | undefined };
 };
 
-export default function CategoryPage({ params }: Props) {
+export default function CategoryPage({ params, searchParams }: Props) {
   const region = getRegionById(params.region);
   if (!region) notFound();
 
   const category = getCategoryById(region, params.category);
   if (!category) notFound();
 
-  const services = getServicesForCategory(params.region, params.category);
+  const page = typeof searchParams.page === 'string' && Number(searchParams.page) > 0 ? Number(searchParams.page) : 1;
+  const { services, totalPages } = getServicesForCategory(params.region, params.category, page, 4);
   const Icon = category.icon;
 
   return (
@@ -42,16 +45,20 @@ export default function CategoryPage({ params }: Props) {
 
         <section id="services-list">
           {services.length > 0 ? (
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-              {services.map((service) => (
-                <ShopCard key={service.id} service={service} />
-              ))}
-            </div>
+            <>
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                {services.map((service) => (
+                  <ShopCard key={service.id} service={service} />
+                ))}
+              </div>
+              <PaginationControls currentPage={page} totalPages={totalPages} />
+            </>
           ) : (
             <div className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/30 p-12 text-center text-muted-foreground">
                 <Building2 className="mb-4 h-12 w-12"/>
                 <h2 className="text-xl font-semibold">قائمة الخدمات قريباً</h2>
                 <p>يتم العمل حالياً على إضافة الخدمات لهذه الفئة.</p>
+                {page > 1 && <p className='mt-4'>ربما تحاول الوصول لصفحة غير موجودة.</p>}
             </div>
           )}
         </section>

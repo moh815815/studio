@@ -25,6 +25,12 @@ export type Service = {
     regionId: string;
 };
 
+export type PaginatedServices = {
+    services: Service[];
+    totalPages: number;
+    totalCount: number;
+}
+
 const commonCategories: Category[] = [
   { id: 'pharmacies', name: 'صيدليات', icon: Hospital, description: 'ابحث عن أقرب صيدلية لك.' },
   { id: 'supermarkets', name: 'سوبر ماركت', icon: ShoppingCart, description: 'تسوق احتياجاتك اليومية بسهولة.' },
@@ -111,12 +117,26 @@ export const services: Service[] = [
     { id: '6', name: 'ورشة الأمانة', rating: 5, address: 'المنطقة الصناعية بالمطبعة', phone: '0112345678', mapUrl: 'https://maps.google.com', categoryId: 'services', regionId: 'al-matbaa' },
     { id: '7', name: 'صيدلية الطوابق', rating: 3, address: 'شارع فيصل، الطوابق', phone: '021234567', mapUrl: 'https://maps.google.com', categoryId: 'pharmacies', regionId: 'al-tawabek' },
     { id: '8', name: 'مطعم حضرموت', rating: 5, address: 'شارع العشرين، فيصل', phone: '0101234567', mapUrl: 'https://maps.google.com', categoryId: 'restaurants', regionId: 'al-eshreen' },
+    { id: '9', name: 'صيدلية دلمار وعطالله', rating: 4, address: 'شارع فيصل، محطة مدكور', phone: '19379', mapUrl: 'https://maps.google.com', categoryId: 'pharmacies', regionId: 'madkor-station' },
+    { id: '10', name: 'صيدلية سيف', rating: 5, address: 'شارع حسن محمد الرئيسي', phone: '19199', mapUrl: 'https://maps.google.com', categoryId: 'pharmacies', regionId: 'hassan-mohamed' },
+    { id: '11', name: 'مدرسة فضل الحديثة', rating: 4, address: 'شارع فيصل، الطوابق', phone: '0237420223', mapUrl: 'https://maps.google.com', categoryId: 'schools', regionId: 'al-tawabek' },
+    { id: '12', name: 'مدرسة الأورمان', rating: 3, address: 'شارع فيصل، الطوابق', phone: '0233857501', mapUrl: 'https://maps.google.com', categoryId: 'schools', regionId: 'al-tawabek' },
+    { id: '13', name: 'مدرسة علوي الخاصة', rating: 4, address: 'شارع فيصل، الطوابق', phone: '0233838383', mapUrl: 'https://maps.google.com', categoryId: 'schools', regionId: 'al-tawabek' },
+    { id: '14', name: 'مدرسة المستقبل', rating: 5, address: 'شارع فيصل، الطوابق', phone: '0233838383', mapUrl: 'https://maps.google.com', categoryId: 'schools', regionId: 'al-tawabek' },
 ];
 
 export const getRegionById = (id: string): Region | undefined => regions.find(r => r.id === id);
 
 export const getCategoryById = (region: Region, categoryId: string): Category | undefined => region.categories.find(c => c.id === categoryId);
 
-export const getServicesForCategory = (regionId: string, categoryId: string): Service[] => {
-    return services.filter(s => s.regionId === regionId && s.categoryId === categoryId);
+export const getServicesForCategory = (regionId: string, categoryId: string, page: number = 1, pageSize: number = 4): PaginatedServices => {
+    const allServices = services.filter(s => s.regionId === regionId && s.categoryId === categoryId);
+    const totalCount = allServices.length;
+    const totalPages = Math.ceil(totalCount / pageSize);
+    const paginatedServices = allServices.slice((page - 1) * pageSize, page * pageSize);
+    return {
+        services: paginatedServices,
+        totalPages,
+        totalCount
+    };
 };
