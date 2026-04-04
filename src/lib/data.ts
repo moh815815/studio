@@ -149,6 +149,12 @@ export const services: Service[] = [
     { id: 'p6', name: 'مركز الصقر لصيانة الأجهزة', rating: 5, address: 'شارع اللاسلكي، المطبعة', phone: '01198765432', mapUrl: '#', categoryId: 'appliances', regionId: 'professions', status: 'available' },
 ];
 
+const emergencyServiceIds = ['1', 'p2', 'p3'];
+
+export const getEmergencyServices = (): Service[] => {
+    return services.filter(s => emergencyServiceIds.includes(s.id));
+};
+
 export const getRegionById = (id: string): Region | undefined => regions.find(r => r.id === id);
 
 export const getCategoryById = (region: Region, categoryId: string): Category | undefined => region.categories.find(c => c.id === categoryId);

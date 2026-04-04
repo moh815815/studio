@@ -1,9 +1,12 @@
+'use client';
+
 import Link from 'next/link';
 import { Card, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Phone, MapPin, Star, ArrowLeft } from 'lucide-react';
 import type { Service } from '@/lib/data';
 import { Badge } from '@/components/ui/badge';
+import { useToast } from '@/hooks/use-toast';
 
 const WhatsAppIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg
@@ -43,6 +46,7 @@ function StatusBadge({ status }: { status: Service['status'] }) {
 }
 
 export default function ShopCard({ service }: { service: Service }) {
+    const { toast } = useToast();
     const isMobile = service.phone.startsWith('01') && service.phone.length === 11;
     const whatsappPhoneNumber = isMobile ? '2' + service.phone : service.phone;
     const whatsappMessage = encodeURIComponent('السلام عليكم، أريد الاستفسار عن خدمة صيانة من دليل فيصل');
@@ -64,7 +68,12 @@ export default function ShopCard({ service }: { service: Service }) {
             </CardHeader>
             <CardFooter className="mt-auto flex justify-end gap-2 border-t bg-muted/20 p-3">
                  {isMobile && (
-                     <Button asChild size="sm" className="bg-green-600 hover:bg-green-700 text-white flex-1 md:flex-none">
+                     <Button 
+                        asChild 
+                        size="sm" 
+                        className="bg-green-600 hover:bg-green-700 text-white flex-1 md:flex-none"
+                        onClick={() => toast({ title: 'جاري التحويل إلى واتساب...' })}
+                     >
                         <a href={`https://wa.me/${whatsappPhoneNumber}?text=${whatsappMessage}`} target="_blank" rel="noopener noreferrer">
                             <WhatsAppIcon className="h-4 w-4"/>
                             <span>واتساب</span>

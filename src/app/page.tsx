@@ -1,9 +1,10 @@
 import Link from 'next/link';
-import { regions } from '@/lib/data';
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import AiSearch from '@/components/ai-search';
+import EmergencyServices from '@/components/emergency-services';
+import RegionFilter from '@/components/region-filter';
 
 export default function Home() {
   return (
@@ -22,26 +23,9 @@ export default function Home() {
           <AiSearch />
         </section>
 
-        <section id="regions">
-          <h2 className="font-headline mb-6 text-center text-3xl font-semibold">
-            اختر منطقتك
-          </h2>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {regions.map((region) => (
-              <Link href={`/${region.id}`} key={region.id} className="group">
-                <Card className="h-full transform transition-all duration-300 ease-in-out group-hover:-translate-y-1 group-hover:shadow-xl group-hover:border-primary">
-                  <CardHeader>
-                    <div className="flex items-center justify-between">
-                      <CardTitle className="font-headline text-xl">{region.name}</CardTitle>
-                      <ArrowLeft className="h-6 w-6 text-muted-foreground transition-transform duration-300 group-hover:translate-x-[-4px] group-hover:text-primary" />
-                    </div>
-                    <CardDescription className="pt-1">{region.description}</CardDescription>
-                  </CardHeader>
-                </Card>
-              </Link>
-            ))}
-          </div>
-        </section>
+        <EmergencyServices />
+        
+        <RegionFilter />
 
         <section id="add-service" className="mt-12">
             <Card className="bg-accent/10 border-accent">

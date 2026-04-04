@@ -29,6 +29,7 @@ import type { Region, Category } from '@/lib/data';
 import type { getServiceById } from '@/lib/data';
 import placeholderImages from '@/lib/placeholder-images.json';
 import Loading from '@/app/loading';
+import { useToast } from '@/hooks/use-toast';
 
 const WhatsAppIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg
@@ -76,6 +77,7 @@ type ServiceDetailsProps = {
 
 export default function ServiceDetails({ service, region, category }: ServiceDetailsProps) {
   const [pageUrl, setPageUrl] = useState('');
+  const { toast } = useToast();
   
   useEffect(() => {
     setPageUrl(window.location.href);
@@ -166,7 +168,11 @@ export default function ServiceDetails({ service, region, category }: ServiceDet
                             </a>
                         </Button>
                         {isMobile && (
-                            <Button asChild className="w-full bg-green-600 hover:bg-green-700 text-white">
+                            <Button 
+                                asChild 
+                                className="w-full bg-green-600 hover:bg-green-700 text-white"
+                                onClick={() => toast({ title: 'جاري التحويل إلى واتساب...' })}
+                            >
                                <a href={`https://wa.me/${whatsappPhoneNumber}?text=${whatsappMessage}`} target="_blank" rel="noopener noreferrer">
                                     <WhatsAppIcon />
                                     <span>تواصل واتساب</span>
@@ -214,6 +220,7 @@ export default function ServiceDetails({ service, region, category }: ServiceDet
                                                             height={imgData.height}
                                                             className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
                                                             data-ai-hint={imgRef.hint}
+                                                            loading="lazy"
                                                         />
                                                     </CardContent>
                                                 </Card>
@@ -251,7 +258,7 @@ export default function ServiceDetails({ service, region, category }: ServiceDet
                                 <DialogTitle>كود QR الخاص بـِ "{service.name}"</DialogTitle>
                             </DialogHeader>
                             <div className="flex items-center justify-center p-4 bg-white rounded-lg">
-                                {pageUrl && <Image src={`https://api.qrserver.com/v1/create-qr-code/?size=256x256&data=${encodeURIComponent(pageUrl)}`} alt={`QR code for ${service.name}`} width={256} height={256} />}
+                                {pageUrl && <Image src={`https://api.qrserver.com/v1/create-qr-code/?size=256x256&data=${encodeURIComponent(pageUrl)}`} alt={`QR code for ${service.name}`} width={256} height={256} loading="lazy" />}
                             </div>
                             <DialogFooter className="sm:justify-center">
                                 <Button type="button" onClick={handleDownloadQr}>
@@ -262,7 +269,12 @@ export default function ServiceDetails({ service, region, category }: ServiceDet
                         </DialogContent>
                     </Dialog>
 
-                    <Button asChild size="lg" className="w-full h-auto py-4 flex flex-col items-center justify-center gap-2">
+                    <Button 
+                        asChild 
+                        size="lg" 
+                        className="w-full h-auto py-4 flex flex-col items-center justify-center gap-2"
+                        onClick={() => toast({ title: 'جاري التحضير للمشاركة عبر واتساب...' })}
+                    >
                         <a href={`https://wa.me/?text=${encodeURIComponent(shareText)}`} target="_blank" rel="noopener noreferrer">
                             <WhatsAppIcon className="h-8 w-8"/>
                            <span>مشاركة على واتساب</span>
