@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { Card, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Phone, MapPin, Star, ArrowLeft } from 'lucide-react';
+import { Phone, MapPin, Star, ArrowLeft, BadgeCheck } from 'lucide-react';
 import type { Service } from '@/lib/data';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
@@ -55,7 +55,10 @@ export default function ShopCard({ service }: { service: Service }) {
         <Card className="flex h-full flex-col overflow-hidden transition-shadow duration-300 hover:shadow-lg dark:border-border">
             <CardHeader className='flex-grow'>
                 <div className="flex items-start justify-between gap-4">
-                    <CardTitle className="text-xl font-bold text-primary">{service.name}</CardTitle>
+                    <div className="flex items-center gap-2">
+                      <CardTitle className="text-xl font-bold text-primary">{service.name}</CardTitle>
+                      {service.isFeatured && <BadgeCheck className="h-5 w-5 text-blue-500" title="خدمة موثوقة" />}
+                    </div>
                     <div className="flex flex-col items-end gap-2 shrink-0">
                         <StarRating rating={service.rating} />
                         <StatusBadge status={service.status} />

@@ -12,6 +12,7 @@ import {
   Star,
   Clock,
   Camera,
+  BadgeCheck,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -121,9 +122,12 @@ export default function ServiceDetails({ service, region, category }: ServiceDet
             </Link>
           </Button>
           <div className="pt-12 text-center">
-            <h1 className="font-headline text-4xl font-bold text-primary md:text-5xl">
-              {service.name}
-            </h1>
+            <div className="flex items-center justify-center gap-2">
+                <h1 className="font-headline text-4xl font-bold text-primary md:text-5xl">
+                {service.name}
+                </h1>
+                {service.isFeatured && <BadgeCheck className="h-8 w-8 text-blue-500" title="خدمة موثوقة"/>}
+            </div>
             <div className="mt-3 flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
                 <p className="text-lg text-muted-foreground">{category.name} في {region.name}</p>
                 <StarRating rating={service.rating} />

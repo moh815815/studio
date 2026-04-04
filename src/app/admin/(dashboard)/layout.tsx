@@ -7,6 +7,7 @@ import {
   Users,
   Building,
   ArrowRight,
+  LogIn,
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -100,7 +101,13 @@ export default function AdminLayout({
               <div className="flex-1">
                 {/* Breadcrumbs can go here */}
               </div>
-              <Button asChild variant="outline">
+               <Button asChild variant="outline">
+                <Link href="/admin/login">
+                  تسجيل الخروج
+                  <LogIn className="h-4 w-4 ms-2" />
+                </Link>
+              </Button>
+              <Button asChild variant="default">
                 <Link href="/">
                   العودة للموقع
                   <ArrowRight className="h-4 w-4 ms-2" />

@@ -1,4 +1,4 @@
-import { type LucideIcon, Hospital, ShoppingCart, Shirt, Wrench, Utensils, School, Bus, AirVent, Zap, Droplets, Hammer, PaintRoller, Camera } from 'lucide-react';
+import { type LucideIcon, Hospital, ShoppingCart, Shirt, Wrench, Utensils, School, Bus, AirVent, Zap, Droplets, Hammer, PaintRoller, Camera, BadgeCheck } from 'lucide-react';
 
 export type Category = {
   id: string;
@@ -23,6 +23,7 @@ export type Service = {
     mapUrl: string;
     categoryId: string;
     regionId: string;
+    isFeatured?: boolean;
     status?: 'available' | 'busy' | 'unavailable';
     gallery?: {id: string; hint: string}[];
 };
@@ -126,7 +127,7 @@ export const regions: Region[] = [
 ];
 
 export const services: Service[] = [
-    { id: '1', name: 'صيدلية العزبي', rating: 5, address: 'شارع العشرين، بجوار فرع We', phone: '19600', mapUrl: 'https://maps.app.goo.gl/abcdef123456', categoryId: 'pharmacies', regionId: 'al-eshreen' },
+    { id: '1', name: 'صيدلية العزبي', rating: 5, address: 'شارع العشرين، بجوار فرع We', phone: '19600', mapUrl: 'https://maps.app.goo.gl/abcdef123456', categoryId: 'pharmacies', regionId: 'al-eshreen', isFeatured: true },
     { id: '2', name: 'صيدلية مصر', rating: 4, address: 'شارع الطالبية الرئيسي', phone: '19110', mapUrl: 'https://maps.app.goo.gl/abcdef123456', categoryId: 'pharmacies', regionId: 'al-talbeya' },
     { id: '3', name: 'كشري التحرير', rating: 4, address: 'شارع فيصل الرئيسي، الطوابق', phone: '0233838383', mapUrl: 'https://maps.app.goo.gl/abcdef123456', categoryId: 'restaurants', regionId: 'al-tawabek' },
     { id: '4', name: 'سوبر ماركت أولاد رجب', rating: 3, address: 'شارع الهرم، المريوطية', phone: '19225', mapUrl: 'https://maps.app.goo.gl/abcdef123456', categoryId: 'supermarkets', regionId: 'al-maryotea' },
@@ -141,7 +142,7 @@ export const services: Service[] = [
     { id: '13', name: 'مدرسة علوي الخاصة', rating: 4, address: 'شارع فيصل، الطوابق', phone: '0233838383', mapUrl: 'https://maps.app.goo.gl/abcdef123456', categoryId: 'schools', regionId: 'al-tawabek' },
     { id: '14', name: 'مدرسة المستقبل', rating: 5, address: 'شارع فيصل، الطوابق', phone: '0233838383', mapUrl: 'https://maps.app.goo.gl/abcdef123456', categoryId: 'schools', regionId: 'al-tawabek' },
     // Professions
-    { id: 'p1', name: 'فني تكييف - أحمد المصري', rating: 5, address: 'متجول في جميع مناطق فيصل', phone: '01001234567', mapUrl: '#', categoryId: 'ac-repair', regionId: 'professions', status: 'available', gallery: [{id: 'ac-1', hint: 'air conditioner'}, {id: 'ac-2', hint: 'clean filter'}, {id: 'ac-3', hint: 'outdoor unit'}] },
+    { id: 'p1', name: 'فني تكييف - أحمد المصري', rating: 5, address: 'متجول في جميع مناطق فيصل', phone: '01001234567', mapUrl: '#', categoryId: 'ac-repair', regionId: 'professions', status: 'available', gallery: [{id: 'ac-1', hint: 'air conditioner'}, {id: 'ac-2', hint: 'clean filter'}, {id: 'ac-3', hint: 'outdoor unit'}], isFeatured: true },
     { id: 'p2', name: 'الأسطى محمود للسباكة', rating: 4, address: 'متجول في جميع مناطق فيصل', phone: '01101234567', mapUrl: '#', categoryId: 'plumbing', regionId: 'professions', status: 'busy', gallery: [{id: 'plumbing-1', hint: 'pipe leak'}, {id: 'plumbing-2', hint: 'new faucet'}] },
     { id: 'p3', name: 'كهربائي - محمد علي', rating: 4, address: 'متجول في جميع مناطق فيصل', phone: '01201234567', mapUrl: '#', categoryId: 'electrician', regionId: 'professions', status: 'available' },
     { id: 'p4', name: 'أبو فارس لأعمال النقاشة', rating: 5, address: 'متجول في جميع مناطق فيصل', phone: '01551234567', mapUrl: '#', categoryId: 'painter', regionId: 'professions', status: 'unavailable', gallery: [{id: 'painting-1', hint: 'wall painting'}] },
@@ -160,12 +161,18 @@ export const getRegionById = (id: string): Region | undefined => regions.find(r 
 export const getCategoryById = (region: Region, categoryId: string): Category | undefined => region.categories.find(c => c.id === categoryId);
 
 export const getServicesForCategory = (regionId: string, categoryId: string, page: number = 1, pageSize: number = 4, sort: 'default' | 'rating' = 'default'): PaginatedServices => {
-    let allServices = services.filter(s => s.regionId === regionId && s.categoryId === categoryId);
+    const filteredServices = services.filter(s => s.regionId === regionId && s.categoryId === categoryId);
+
+    const featured = filteredServices.filter(s => s.isFeatured);
+    const notFeatured = filteredServices.filter(s => !s.isFeatured);
 
     if (sort === 'rating') {
-        allServices.sort((a, b) => b.rating - a.rating);
+        featured.sort((a, b) => b.rating - a.rating);
+        notFeatured.sort((a, b) => b.rating - a.rating);
     }
-
+    
+    const allServices = [...featured, ...notFeatured];
+    
     const totalCount = allServices.length;
     const totalPages = Math.ceil(totalCount / pageSize);
     const paginatedServices = allServices.slice((page - 1) * pageSize, page * pageSize);

@@ -17,7 +17,7 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { pendingServices } from "@/lib/data"
-import { CheckCircle, Trash2 } from "lucide-react"
+import { CheckCircle, Trash2, Pin } from "lucide-react"
 
 export function RecentSignups() {
     // In a real app, this would be a server action or API call
@@ -27,12 +27,15 @@ export function RecentSignups() {
     const handleDelete = (id: string) => {
         alert(`تم حذف الطلب رقم ${id}`);
     }
+    const handlePin = (id: string) => {
+        alert(`تم تثبيت الخدمة رقم ${id} كخدمة مميزة.`);
+    }
   return (
     <Card>
       <CardHeader>
-        <CardTitle>طلبات التسجيل الجديدة</CardTitle>
+        <CardTitle>إدارة الخدمات والطلبات</CardTitle>
         <CardDescription>
-          مراجعة وتفعيل الطلبات المرسلة من أصحاب المحلات والفنيين.
+          مراجعة وتفعيل الطلبات، وإدارة الخدمات المميزة.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -42,7 +45,7 @@ export function RecentSignups() {
               <TableHead>اسم المحل/الفني</TableHead>
               <TableHead>التصنيف</TableHead>
               <TableHead className="hidden md:table-cell">المنطقة</TableHead>
-              <TableHead className="hidden md:table-cell">رقم الهاتف</TableHead>
+              <TableHead className="hidden md:table-cell">الحالة</TableHead>
               <TableHead>
                 <span className="sr-only">الإجراءات</span>
               </TableHead>
@@ -56,9 +59,15 @@ export function RecentSignups() {
                         <Badge variant="outline">{service.categoryName}</Badge>
                     </TableCell>
                     <TableCell className="hidden md:table-cell">{service.regionName}</TableCell>
-                    <TableCell className="hidden md:table-cell" dir="ltr">{service.phone}</TableCell>
+                    <TableCell className="hidden md:table-cell">
+                        <Badge variant="secondary">طلب جديد</Badge>
+                    </TableCell>
                     <TableCell>
                         <div className="flex items-center justify-end gap-2">
+                             <Button variant="ghost" size="icon" onClick={() => handlePin(service.id)}>
+                                <Pin className="h-4 w-4 text-gray-400" />
+                                <span className="sr-only">تثبيت</span>
+                            </Button>
                             <Button variant="outline" size="icon" onClick={() => handleApprove(service.id)}>
                                 <CheckCircle className="h-4 w-4 text-green-500" />
                                 <span className="sr-only">تفعيل</span>
