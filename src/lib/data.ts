@@ -1,4 +1,4 @@
-import { type LucideIcon, Pill, ShoppingCart, Shirt, Wrench, Utensils, School, Bus } from 'lucide-react';
+import { type LucideIcon, Hospital, ShoppingCart, Shirt, Wrench, Utensils, School, Bus } from 'lucide-react';
 
 export type Category = {
   id: string;
@@ -14,8 +14,19 @@ export type Region = {
   categories: Category[];
 };
 
+export type Service = {
+    id: string;
+    name: string;
+    rating: number; // 1-5
+    address: string;
+    phone: string;
+    mapUrl: string;
+    categoryId: string;
+    regionId: string;
+};
+
 const commonCategories: Category[] = [
-  { id: 'pharmacies', name: 'صيدليات', icon: Pill, description: 'ابحث عن أقرب صيدلية لك.' },
+  { id: 'pharmacies', name: 'صيدليات', icon: Hospital, description: 'ابحث عن أقرب صيدلية لك.' },
   { id: 'supermarkets', name: 'سوبر ماركت', icon: ShoppingCart, description: 'تسوق احتياجاتك اليومية بسهولة.' },
   { id: 'clothing', name: 'محلات ملابس', icon: Shirt, description: 'أحدث صيحات الموضة للجميع.' },
   { id: 'services', name: 'خدمات', icon: Wrench, description: 'خدمات متنوعة لإصلاح وصيانة.' },
@@ -91,6 +102,21 @@ export const regions: Region[] = [
   }
 ];
 
+export const services: Service[] = [
+    { id: '1', name: 'صيدلية العزبي', rating: 5, address: 'شارع العشرين، بجوار فرع We', phone: '19600', mapUrl: 'https://maps.google.com', categoryId: 'pharmacies', regionId: 'al-eshreen' },
+    { id: '2', name: 'صيدلية مصر', rating: 4, address: 'شارع الطالبية الرئيسي', phone: '19110', mapUrl: 'https://maps.google.com', categoryId: 'pharmacies', regionId: 'al-talbeya' },
+    { id: '3', name: 'كشري التحرير', rating: 4, address: 'شارع فيصل الرئيسي، الطوابق', phone: '0233838383', mapUrl: 'https://maps.google.com', categoryId: 'restaurants', regionId: 'al-tawabek' },
+    { id: '4', name: 'سوبر ماركت أولاد رجب', rating: 3, address: 'شارع الهرم، المريوطية', phone: '19225', mapUrl: 'https://maps.google.com', categoryId: 'supermarkets', regionId: 'al-maryotea' },
+    { id: '5', name: 'تاون تيم', rating: 4, address: 'شارع العشرين - أمام بركة', phone: '0123456789', mapUrl: 'https://maps.google.com', categoryId: 'clothing', regionId: 'al-eshreen' },
+    { id: '6', name: 'ورشة الأمانة', rating: 5, address: 'المنطقة الصناعية بالمطبعة', phone: '0112345678', mapUrl: 'https://maps.google.com', categoryId: 'services', regionId: 'al-matbaa' },
+    { id: '7', name: 'صيدلية الطوابق', rating: 3, address: 'شارع فيصل، الطوابق', phone: '021234567', mapUrl: 'https://maps.google.com', categoryId: 'pharmacies', regionId: 'al-tawabek' },
+    { id: '8', name: 'مطعم حضرموت', rating: 5, address: 'شارع العشرين، فيصل', phone: '0101234567', mapUrl: 'https://maps.google.com', categoryId: 'restaurants', regionId: 'al-eshreen' },
+];
+
 export const getRegionById = (id: string): Region | undefined => regions.find(r => r.id === id);
 
 export const getCategoryById = (region: Region, categoryId: string): Category | undefined => region.categories.find(c => c.id === categoryId);
+
+export const getServicesForCategory = (regionId: string, categoryId: string): Service[] => {
+    return services.filter(s => s.regionId === regionId && s.categoryId === categoryId);
+};

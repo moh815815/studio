@@ -1,8 +1,9 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { getRegionById, getCategoryById } from '@/lib/data';
+import { getRegionById, getCategoryById, getServicesForCategory } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Building2 } from 'lucide-react';
+import ShopCard from '@/components/shop-card';
 
 type Props = {
   params: { region: string; category: string };
@@ -15,6 +16,7 @@ export default function CategoryPage({ params }: Props) {
   const category = getCategoryById(region, params.category);
   if (!category) notFound();
 
+  const services = getServicesForCategory(params.region, params.category);
   const Icon = category.icon;
 
   return (
@@ -39,11 +41,19 @@ export default function CategoryPage({ params }: Props) {
         </header>
 
         <section id="services-list">
+          {services.length > 0 ? (
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+              {services.map((service) => (
+                <ShopCard key={service.id} service={service} />
+              ))}
+            </div>
+          ) : (
             <div className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/30 p-12 text-center text-muted-foreground">
                 <Building2 className="mb-4 h-12 w-12"/>
                 <h2 className="text-xl font-semibold">قائمة الخدمات قريباً</h2>
                 <p>يتم العمل حالياً على إضافة الخدمات لهذه الفئة.</p>
             </div>
+          )}
         </section>
       </div>
     </main>
