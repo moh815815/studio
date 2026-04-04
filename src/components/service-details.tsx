@@ -28,7 +28,6 @@ import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext
 import type { Region, Category } from '@/lib/data';
 import type { getServiceById } from '@/lib/data';
 import placeholderImages from '@/lib/placeholder-images.json';
-import Loading from '@/app/loading';
 import { useToast } from '@/hooks/use-toast';
 
 const WhatsAppIcon = (props: React.SVGProps<SVGSVGElement>) => (
@@ -110,10 +109,6 @@ export default function ServiceDetails({ service, region, category }: ServiceDet
         window.open(qrApiUrl, '_blank');
     }
   };
-  
-  if (!pageUrl) {
-    return <Loading />;
-  }
 
   return (
     <main className="flex min-h-screen w-full flex-col items-center bg-background">
@@ -248,7 +243,7 @@ export default function ServiceDetails({ service, region, category }: ServiceDet
                 <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <Dialog>
                         <DialogTrigger asChild>
-                            <Button variant="outline" size="lg" className="w-full h-auto py-4 flex flex-col items-center justify-center gap-2">
+                            <Button variant="outline" size="lg" className="w-full h-auto py-4 flex flex-col items-center justify-center gap-2" disabled={!pageUrl}>
                                 <QrCode className="h-8 w-8"/>
                                 <span>توليد كود QR</span>
                             </Button>
@@ -274,6 +269,7 @@ export default function ServiceDetails({ service, region, category }: ServiceDet
                         size="lg" 
                         className="w-full h-auto py-4 flex flex-col items-center justify-center gap-2"
                         onClick={() => toast({ title: 'جاري التحضير للمشاركة عبر واتساب...' })}
+                        disabled={!pageUrl}
                     >
                         <a href={`https://wa.me/?text=${encodeURIComponent(shareText)}`} target="_blank" rel="noopener noreferrer">
                             <WhatsAppIcon className="h-8 w-8"/>
