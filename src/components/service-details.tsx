@@ -11,6 +11,7 @@ import {
   QrCode,
   Star,
   Clock,
+  Camera,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -23,8 +24,10 @@ import {
   DialogTrigger,
   DialogFooter,
 } from '@/components/ui/dialog';
+import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from '@/components/ui/carousel';
 import type { Region, Category } from '@/lib/data';
 import type { getServiceById } from '@/lib/data';
+import placeholderImages from '@/lib/placeholder-images.json';
 import Loading from '@/app/loading';
 
 const WhatsAppIcon = (props: React.SVGProps<SVGSVGElement>) => (
@@ -174,6 +177,60 @@ export default function ServiceDetails({ service, region, category }: ServiceDet
                 </div>
             </CardContent>
         </Card>
+
+        {service.gallery && service.gallery.length > 0 && (
+            <section className="mt-8">
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="font-headline text-2xl flex items-center gap-2">
+                            <Camera />
+                            معرض الأعمال
+                        </CardTitle>
+                        <CardDescription>صور من أعمالنا السابقة لضمان جودة الخدمة</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <Carousel
+                            opts={{
+                                align: "start",
+                                loop: true,
+                                direction: 'rtl',
+                            }}
+                            className="w-full"
+                        >
+                            <CarouselContent>
+                                {service.gallery.map((imgRef, index) => {
+                                    const imgData = placeholderImages.find(p => p.id === imgRef.id);
+                                    if (!imgData) return null;
+                                    const imageUrl = `https://picsum.photos/seed/${imgData.seed}/${imgData.width}/${imgData.height}`;
+                                    return (
+                                        <CarouselItem key={index} className="md:basis-1/2">
+                                            <div className="p-1">
+                                                <Card className="overflow-hidden">
+                                                    <CardContent className="flex aspect-[4/3] items-center justify-center p-0">
+                                                        <Image
+                                                            src={imageUrl}
+                                                            alt={`${service.name} - ${imgRef.hint}`}
+                                                            width={imgData.width}
+                                                            height={imgData.height}
+                                                            className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                                                            data-ai-hint={imgRef.hint}
+                                                        />
+                                                    </CardContent>
+                                                </Card>
+                                            </div>
+                                        </CarouselItem>
+                                    );
+                                })}
+                            </CarouselContent>
+                            <div className="hidden md:block">
+                                <CarouselPrevious className="absolute start-2 top-1/2 -translate-y-1/2" />
+                                <CarouselNext className="absolute end-2 top-1/2 -translate-y-1/2" />
+                            </div>
+                        </Carousel>
+                    </CardContent>
+                </Card>
+            </section>
+        )}
 
         <section className="mt-8">
             <Card>

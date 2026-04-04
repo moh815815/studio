@@ -1,4 +1,4 @@
-import { type LucideIcon, Hospital, ShoppingCart, Shirt, Wrench, Utensils, School, Bus, AirVent, Zap, Droplets, Hammer, PaintRoller } from 'lucide-react';
+import { type LucideIcon, Hospital, ShoppingCart, Shirt, Wrench, Utensils, School, Bus, AirVent, Zap, Droplets, Hammer, PaintRoller, Camera } from 'lucide-react';
 
 export type Category = {
   id: string;
@@ -24,6 +24,7 @@ export type Service = {
     categoryId: string;
     regionId: string;
     status?: 'available' | 'busy' | 'unavailable';
+    gallery?: {id: string; hint: string}[];
 };
 
 export type PaginatedServices = {
@@ -140,11 +141,11 @@ export const services: Service[] = [
     { id: '13', name: 'مدرسة علوي الخاصة', rating: 4, address: 'شارع فيصل، الطوابق', phone: '0233838383', mapUrl: 'https://maps.app.goo.gl/abcdef123456', categoryId: 'schools', regionId: 'al-tawabek' },
     { id: '14', name: 'مدرسة المستقبل', rating: 5, address: 'شارع فيصل، الطوابق', phone: '0233838383', mapUrl: 'https://maps.app.goo.gl/abcdef123456', categoryId: 'schools', regionId: 'al-tawabek' },
     // Professions
-    { id: 'p1', name: 'فني تكييف - أحمد المصري', rating: 5, address: 'متجول في جميع مناطق فيصل', phone: '01001234567', mapUrl: '#', categoryId: 'ac-repair', regionId: 'professions', status: 'available' },
-    { id: 'p2', name: 'الأسطى محمود للسباكة', rating: 4, address: 'متجول في جميع مناطق فيصل', phone: '01101234567', mapUrl: '#', categoryId: 'plumbing', regionId: 'professions', status: 'busy' },
+    { id: 'p1', name: 'فني تكييف - أحمد المصري', rating: 5, address: 'متجول في جميع مناطق فيصل', phone: '01001234567', mapUrl: '#', categoryId: 'ac-repair', regionId: 'professions', status: 'available', gallery: [{id: 'ac-1', hint: 'air conditioner'}, {id: 'ac-2', hint: 'clean filter'}, {id: 'ac-3', hint: 'outdoor unit'}] },
+    { id: 'p2', name: 'الأسطى محمود للسباكة', rating: 4, address: 'متجول في جميع مناطق فيصل', phone: '01101234567', mapUrl: '#', categoryId: 'plumbing', regionId: 'professions', status: 'busy', gallery: [{id: 'plumbing-1', hint: 'pipe leak'}, {id: 'plumbing-2', hint: 'new faucet'}] },
     { id: 'p3', name: 'كهربائي - محمد علي', rating: 4, address: 'متجول في جميع مناطق فيصل', phone: '01201234567', mapUrl: '#', categoryId: 'electrician', regionId: 'professions', status: 'available' },
-    { id: 'p4', name: 'أبو فارس لأعمال النقاشة', rating: 5, address: 'متجول في جميع مناطق فيصل', phone: '01551234567', mapUrl: '#', categoryId: 'painter', regionId: 'professions', status: 'unavailable' },
-    { id: 'p5', name: 'ورشة المعلم رضا للنجارة', rating: 4, address: 'شارع الملكة، كعبيش', phone: '01098765432', mapUrl: '#', categoryId: 'carpenter', regionId: 'professions', status: 'available' },
+    { id: 'p4', name: 'أبو فارس لأعمال النقاشة', rating: 5, address: 'متجول في جميع مناطق فيصل', phone: '01551234567', mapUrl: '#', categoryId: 'painter', regionId: 'professions', status: 'unavailable', gallery: [{id: 'painting-1', hint: 'wall painting'}] },
+    { id: 'p5', name: 'ورشة المعلم رضا للنجارة', rating: 4, address: 'شارع الملكة، كعبيش', phone: '01098765432', mapUrl: '#', categoryId: 'carpenter', regionId: 'professions', status: 'available', gallery: [{id: 'carpentry-1', hint: 'wooden door'}] },
     { id: 'p6', name: 'مركز الصقر لصيانة الأجهزة', rating: 5, address: 'شارع اللاسلكي، المطبعة', phone: '01198765432', mapUrl: '#', categoryId: 'appliances', regionId: 'professions', status: 'available' },
 ];
 
@@ -152,8 +153,13 @@ export const getRegionById = (id: string): Region | undefined => regions.find(r 
 
 export const getCategoryById = (region: Region, categoryId: string): Category | undefined => region.categories.find(c => c.id === categoryId);
 
-export const getServicesForCategory = (regionId: string, categoryId: string, page: number = 1, pageSize: number = 4): PaginatedServices => {
-    const allServices = services.filter(s => s.regionId === regionId && s.categoryId === categoryId);
+export const getServicesForCategory = (regionId: string, categoryId: string, page: number = 1, pageSize: number = 4, sort: 'default' | 'rating' = 'default'): PaginatedServices => {
+    let allServices = services.filter(s => s.regionId === regionId && s.categoryId === categoryId);
+
+    if (sort === 'rating') {
+        allServices.sort((a, b) => b.rating - a.rating);
+    }
+
     const totalCount = allServices.length;
     const totalPages = Math.ceil(totalCount / pageSize);
     const paginatedServices = allServices.slice((page - 1) * pageSize, page * pageSize);

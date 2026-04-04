@@ -2,13 +2,16 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { getRegionById, getCategoryById, getServicesForCategory } from '@/lib/data';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Building2 } from 'lucide-react';
+import { ArrowRight, Building2, Star } from 'lucide-react';
 import ShopCard from '@/components/shop-card';
 import PaginationControls from '@/components/pagination-controls';
 
 type Props = {
   params: { region: string; category: string };
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: { 
+    page?: string;
+    sort?: 'rating' | 'default';
+ };
 };
 
 export default function CategoryPage({ params, searchParams }: Props) {
@@ -19,8 +22,20 @@ export default function CategoryPage({ params, searchParams }: Props) {
   if (!category) notFound();
 
   const page = typeof searchParams.page === 'string' && Number(searchParams.page) > 0 ? Number(searchParams.page) : 1;
-  const { services, totalPages } = getServicesForCategory(params.region, params.category, page, 4);
+  const sort = searchParams.sort || 'default';
+  const { services, totalPages } = getServicesForCategory(params.region, params.category, page, 4, sort);
   const Icon = category.icon;
+
+  const createSortURL = (sortValue: 'default' | 'rating') => {
+    const newParams = new URLSearchParams(searchParams);
+    newParams.set('page', '1');
+    if (sortValue === 'default') {
+      newParams.delete('sort');
+    } else {
+      newParams.set('sort', sortValue);
+    }
+    return `/${params.region}/${params.category}?${newParams.toString()}`;
+  };
 
   return (
     <main className="flex min-h-screen w-full flex-col items-center bg-background">
@@ -42,6 +57,23 @@ export default function CategoryPage({ params, searchParams }: Props) {
             في منطقة {region.name}
           </p>
         </header>
+        
+        {services.length > 0 && (
+            <div className="mb-6 flex flex-col items-center justify-between gap-4 sm:flex-row">
+                <p className="text-sm text-muted-foreground">أدوات الفرز والترتيب:</p>
+                <div className="flex items-center gap-2">
+                    <Button asChild variant={sort === 'default' ? 'secondary' : 'outline'} size="sm">
+                        <Link href={createSortURL('default')}>الافتراضي</Link>
+                    </Button>
+                    <Button asChild variant={sort === 'rating' ? 'secondary' : 'outline'} size="sm">
+                        <Link href={createSortURL('rating')}>
+                            <Star />
+                            الأعلى تقييماً
+                        </Link>
+                    </Button>
+                </div>
+            </div>
+        )}
 
         <section id="services-list">
           {services.length > 0 ? (

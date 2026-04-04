@@ -1,0 +1,51 @@
+[
+  {
+    "id": "ac-1",
+    "seed": "123",
+    "width": 800,
+    "height": 600,
+    "hint": "air conditioner"
+  },
+  {
+    "id": "ac-2",
+    "seed": "456",
+    "width": 800,
+    "height": 600,
+    "hint": "clean filter"
+  },
+  {
+    "id": "ac-3",
+    "seed": "789",
+    "width": 800,
+    "height": 600,
+    "hint": "outdoor unit"
+  },
+  {
+    "id": "plumbing-1",
+    "seed": "111",
+    "width": 800,
+    "height": 600,
+    "hint": "pipe leak"
+  },
+  {
+    "id": "plumbing-2",
+    "seed": "222",
+    "width": 800,
+    "height": 600,
+    "hint": "new faucet"
+  },
+  {
+    "id": "carpentry-1",
+    "seed": "333",
+    "width": 800,
+    "height": 600,
+    "hint": "wooden door"
+  },
+  {
+    "id": "painting-1",
+    "seed": "444",
+    "width": 800,
+    "height": 600,
+    "hint": "wall painting"
+  }
+]
