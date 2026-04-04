@@ -192,3 +192,19 @@ export const getServiceById = (id: string): (Service & {regionName: string, cate
         categoryName: category.name,
     };
 };
+
+export const pendingServices: (Service & {categoryName?: string, regionName?: string})[] = [
+    { id: 'p-new-1', name: 'خدمة سباكة الأمانة', rating: 0, address: 'يقدم الطلب من الطالبية', phone: '01234567890', mapUrl: '', categoryId: 'plumbing', regionId: 'professions', categoryName: 'سباكة', regionName: 'المهن والحرف'},
+    { id: 'p-new-2', name: 'صيدلية الشروق الجديدة', rating: 0, address: 'شارع العشرين', phone: '01122334455', mapUrl: '', categoryId: 'pharmacies', regionId: 'al-eshreen', categoryName: 'صيدليات', regionName: 'العشرين'},
+    { id: 'p-new-3', name: 'فني تكييفات إكسبريس', rating: 0, address: 'يقدم الطلب من المريوطية', phone: '01000000000', mapUrl: '', categoryId: 'ac-repair', regionId: 'professions', categoryName: 'إصلاح تكييفات', regionName: 'المهن والحرف'},
+];
+
+export const regionSearchStats = [
+    { name: 'العشرين', total: Math.floor(Math.random() * 5000) + 1000 },
+    { name: 'الطوابق', total: Math.floor(Math.random() * 5000) + 1000 },
+    { name: 'الطالبية', total: Math.floor(Math.random() * 5000) + 1000 },
+    { name: 'المريوطية', total: Math.floor(Math.random() * 5000) + 1000 },
+    { name: 'محطة مدكور', total: Math.floor(Math.random() * 5000) + 1000 },
+    { name: 'حسن محمد', total: Math.floor(Math.random() * 5000) + 1000 },
+    { name: 'أخرى', total: Math.floor(Math.random() * 2000) + 500 },
+];
