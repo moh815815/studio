@@ -109,20 +109,20 @@ export const regions: Region[] = [
 ];
 
 export const services: Service[] = [
-    { id: '1', name: 'صيدلية العزبي', rating: 5, address: 'شارع العشرين، بجوار فرع We', phone: '19600', mapUrl: 'https://maps.google.com', categoryId: 'pharmacies', regionId: 'al-eshreen' },
-    { id: '2', name: 'صيدلية مصر', rating: 4, address: 'شارع الطالبية الرئيسي', phone: '19110', mapUrl: 'https://maps.google.com', categoryId: 'pharmacies', regionId: 'al-talbeya' },
-    { id: '3', name: 'كشري التحرير', rating: 4, address: 'شارع فيصل الرئيسي، الطوابق', phone: '0233838383', mapUrl: 'https://maps.google.com', categoryId: 'restaurants', regionId: 'al-tawabek' },
-    { id: '4', name: 'سوبر ماركت أولاد رجب', rating: 3, address: 'شارع الهرم، المريوطية', phone: '19225', mapUrl: 'https://maps.google.com', categoryId: 'supermarkets', regionId: 'al-maryotea' },
-    { id: '5', name: 'تاون تيم', rating: 4, address: 'شارع العشرين - أمام بركة', phone: '0123456789', mapUrl: 'https://maps.google.com', categoryId: 'clothing', regionId: 'al-eshreen' },
-    { id: '6', name: 'ورشة الأمانة', rating: 5, address: 'المنطقة الصناعية بالمطبعة', phone: '0112345678', mapUrl: 'https://maps.google.com', categoryId: 'services', regionId: 'al-matbaa' },
-    { id: '7', name: 'صيدلية الطوابق', rating: 3, address: 'شارع فيصل، الطوابق', phone: '021234567', mapUrl: 'https://maps.google.com', categoryId: 'pharmacies', regionId: 'al-tawabek' },
-    { id: '8', name: 'مطعم حضرموت', rating: 5, address: 'شارع العشرين، فيصل', phone: '0101234567', mapUrl: 'https://maps.google.com', categoryId: 'restaurants', regionId: 'al-eshreen' },
-    { id: '9', name: 'صيدلية دلمار وعطالله', rating: 4, address: 'شارع فيصل، محطة مدكور', phone: '19379', mapUrl: 'https://maps.google.com', categoryId: 'pharmacies', regionId: 'madkor-station' },
-    { id: '10', name: 'صيدلية سيف', rating: 5, address: 'شارع حسن محمد الرئيسي', phone: '19199', mapUrl: 'https://maps.google.com', categoryId: 'pharmacies', regionId: 'hassan-mohamed' },
-    { id: '11', name: 'مدرسة فضل الحديثة', rating: 4, address: 'شارع فيصل، الطوابق', phone: '0237420223', mapUrl: 'https://maps.google.com', categoryId: 'schools', regionId: 'al-tawabek' },
-    { id: '12', name: 'مدرسة الأورمان', rating: 3, address: 'شارع فيصل، الطوابق', phone: '0233857501', mapUrl: 'https://maps.google.com', categoryId: 'schools', regionId: 'al-tawabek' },
-    { id: '13', name: 'مدرسة علوي الخاصة', rating: 4, address: 'شارع فيصل، الطوابق', phone: '0233838383', mapUrl: 'https://maps.google.com', categoryId: 'schools', regionId: 'al-tawabek' },
-    { id: '14', name: 'مدرسة المستقبل', rating: 5, address: 'شارع فيصل، الطوابق', phone: '0233838383', mapUrl: 'https://maps.google.com', categoryId: 'schools', regionId: 'al-tawabek' },
+    { id: '1', name: 'صيدلية العزبي', rating: 5, address: 'شارع العشرين، بجوار فرع We', phone: '19600', mapUrl: 'https://maps.app.goo.gl/abcdef123456', categoryId: 'pharmacies', regionId: 'al-eshreen' },
+    { id: '2', name: 'صيدلية مصر', rating: 4, address: 'شارع الطالبية الرئيسي', phone: '19110', mapUrl: 'https://maps.app.goo.gl/abcdef123456', categoryId: 'pharmacies', regionId: 'al-talbeya' },
+    { id: '3', name: 'كشري التحرير', rating: 4, address: 'شارع فيصل الرئيسي، الطوابق', phone: '0233838383', mapUrl: 'https://maps.app.goo.gl/abcdef123456', categoryId: 'restaurants', regionId: 'al-tawabek' },
+    { id: '4', name: 'سوبر ماركت أولاد رجب', rating: 3, address: 'شارع الهرم، المريوطية', phone: '19225', mapUrl: 'https://maps.app.goo.gl/abcdef123456', categoryId: 'supermarkets', regionId: 'al-maryotea' },
+    { id: '5', name: 'تاون تيم', rating: 4, address: 'شارع العشرين - أمام بركة', phone: '0123456789', mapUrl: 'https://maps.app.goo.gl/abcdef123456', categoryId: 'clothing', regionId: 'al-eshreen' },
+    { id: '6', name: 'ورشة الأمانة', rating: 5, address: 'المنطقة الصناعية بالمطبعة', phone: '0112345678', mapUrl: 'https://maps.app.goo.gl/abcdef123456', categoryId: 'services', regionId: 'al-matbaa' },
+    { id: '7', name: 'صيدلية الطوابق', rating: 3, address: 'شارع فيصل، الطوابق', phone: '021234567', mapUrl: 'https://maps.app.goo.gl/abcdef123456', categoryId: 'pharmacies', regionId: 'al-tawabek' },
+    { id: '8', name: 'مطعم حضرموت', rating: 5, address: 'شارع العشرين، فيصل', phone: '0101234567', mapUrl: 'https://maps.app.goo.gl/abcdef123456', categoryId: 'restaurants', regionId: 'al-eshreen' },
+    { id: '9', name: 'صيدلية دلمار وعطالله', rating: 4, address: 'شارع فيصل، محطة مدكور', phone: '19379', mapUrl: 'https://maps.app.goo.gl/abcdef123456', categoryId: 'pharmacies', regionId: 'madkor-station' },
+    { id: '10', name: 'صيدلية سيف', rating: 5, address: 'شارع حسن محمد الرئيسي', phone: '19199', mapUrl: 'https://maps.app.goo.gl/abcdef123456', categoryId: 'pharmacies', regionId: 'hassan-mohamed' },
+    { id: '11', name: 'مدرسة فضل الحديثة', rating: 4, address: 'شارع فيصل، الطوابق', phone: '0237420223', mapUrl: 'https://maps.app.goo.gl/abcdef123456', categoryId: 'schools', regionId: 'al-tawabek' },
+    { id: '12', name: 'مدرسة الأورمان', rating: 3, address: 'شارع فيصل، الطوابق', phone: '0233857501', mapUrl: 'https://maps.app.goo.gl/abcdef123456', categoryId: 'schools', regionId: 'al-tawabek' },
+    { id: '13', name: 'مدرسة علوي الخاصة', rating: 4, address: 'شارع فيصل، الطوابق', phone: '0233838383', mapUrl: 'https://maps.app.goo.gl/abcdef123456', categoryId: 'schools', regionId: 'al-tawabek' },
+    { id: '14', name: 'مدرسة المستقبل', rating: 5, address: 'شارع فيصل، الطوابق', phone: '0233838383', mapUrl: 'https://maps.app.goo.gl/abcdef123456', categoryId: 'schools', regionId: 'al-tawabek' },
 ];
 
 export const getRegionById = (id: string): Region | undefined => regions.find(r => r.id === id);
@@ -138,5 +138,22 @@ export const getServicesForCategory = (regionId: string, categoryId: string, pag
         services: paginatedServices,
         totalPages,
         totalCount
+    };
+};
+
+export const getServiceById = (id: string): (Service & {regionName: string, categoryName: string}) | undefined => {
+    const service = services.find(s => s.id === id);
+    if (!service) return undefined;
+
+    const region = regions.find(r => r.id === service.regionId);
+    if (!region) return undefined;
+
+    const category = region.categories.find(c => c.id === service.categoryId);
+    if (!category) return undefined;
+
+    return {
+        ...service,
+        regionName: region.name,
+        categoryName: category.name,
     };
 };
