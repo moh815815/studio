@@ -53,7 +53,7 @@ export default function AdminLayout({
             <SidebarContent>
               <SidebarMenu>
                 <SidebarMenuItem>
-                  <SidebarMenuButton asChild isActive>
+                  <SidebarMenuButton asChild>
                     <Link href="/admin">
                       <Home />
                       <span>لوحة التحكم</span>
@@ -61,7 +61,7 @@ export default function AdminLayout({
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton asChild disabled>
                     <Link href="#">
                       <Users />
                       <span>إدارة الطلبات</span>
@@ -70,6 +70,14 @@ export default function AdminLayout({
                 </SidebarMenuItem>
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild>
+                    <Link href="/admin/services">
+                      <Package />
+                      <span>المحلات</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild disabled>
                     <Link href="#">
                       <LineChart />
                       <span>الإحصائيات</span>
@@ -77,15 +85,7 @@ export default function AdminLayout({
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
-                    <Link href="#">
-                      <Package />
-                      <span>المحلات</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton asChild disabled>
                     <Link href="#">
                       <Settings />
                       <span>الإعدادات</span>
