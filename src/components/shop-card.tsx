@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { Card, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Phone, MapPin, Star, ArrowLeft, BadgeCheck } from 'lucide-react';
+import { Phone, MapPin, Star, ArrowLeft, BadgeCheck, Zap } from 'lucide-react';
 import type { Service } from '@/lib/data';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
@@ -49,7 +49,7 @@ export default function ShopCard({ service }: { service: Service }) {
     const { toast } = useToast();
     const isMobile = service.phone.startsWith('01') && service.phone.length === 11;
     const whatsappPhoneNumber = isMobile ? '2' + service.phone : service.phone;
-    const whatsappMessage = encodeURIComponent('السلام عليكم، أريد الاستفسار عن خدمة صيانة من دليل فيصل');
+    const whatsappMessage = encodeURIComponent(service.offer ? `السلام عليكم، أريد الاستفسار عن "${service.offer.title}" من دليل فيصل` : 'السلام عليكم، أريد الاستفسار عن خدمة صيانة من دليل فيصل');
 
     return (
         <Card className="flex h-full flex-col overflow-hidden transition-shadow duration-300 hover:shadow-lg dark:border-border">
@@ -57,6 +57,7 @@ export default function ShopCard({ service }: { service: Service }) {
                 <div className="flex items-start justify-between gap-4">
                     <div className="flex items-center gap-2">
                       <CardTitle className="text-xl font-bold text-primary">{service.name}</CardTitle>
+                      {service.offer && <Zap className="h-5 w-5 text-yellow-400 fill-yellow-400" title="عرض خاص"/>}
                       {service.isFeatured && <BadgeCheck className="h-5 w-5 text-blue-500" title="خدمة موثوقة" />}
                     </div>
                     <div className="flex flex-col items-end gap-2 shrink-0">

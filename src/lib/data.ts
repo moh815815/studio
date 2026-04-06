@@ -26,6 +26,12 @@ export type Service = {
     isFeatured?: boolean;
     status?: 'available' | 'busy' | 'unavailable';
     gallery?: {id: string; hint: string}[];
+    productImage?: string; // Placeholder ID for the product image
+    offer?: {
+        title: string;
+        discount: number;
+        endsAt: string; // ISO string date for countdown
+    };
 };
 
 export type PaginatedServices = {
@@ -126,12 +132,19 @@ export const regions: Region[] = [
   }
 ];
 
+// Helper to generate a future date for demo offers
+const getFutureDate = (hours: number) => {
+    const date = new Date();
+    date.setHours(date.getHours() + hours);
+    return date.toISOString();
+}
+
 export const services: Service[] = [
     { id: '1', name: 'صيدلية العزبي', rating: 5, address: 'شارع العشرين، بجوار فرع We', phone: '19600', mapUrl: 'https://maps.app.goo.gl/abcdef123456', categoryId: 'pharmacies', regionId: 'al-eshreen', isFeatured: true },
     { id: '2', name: 'صيدلية مصر', rating: 4, address: 'شارع الطالبية الرئيسي', phone: '19110', mapUrl: 'https://maps.app.goo.gl/abcdef123456', categoryId: 'pharmacies', regionId: 'al-talbeya' },
     { id: '3', name: 'كشري التحرير', rating: 4, address: 'شارع فيصل الرئيسي، الطوابق', phone: '0233838383', mapUrl: 'https://maps.app.goo.gl/abcdef123456', categoryId: 'restaurants', regionId: 'al-tawabek' },
     { id: '4', name: 'سوبر ماركت أولاد رجب', rating: 3, address: 'شارع الهرم، المريوطية', phone: '19225', mapUrl: 'https://maps.app.goo.gl/abcdef123456', categoryId: 'supermarkets', regionId: 'al-maryotea' },
-    { id: '5', name: 'تاون تيم', rating: 4, address: 'شارع العشرين - أمام بركة', phone: '01234567890', mapUrl: 'https://maps.app.goo.gl/abcdef123456', categoryId: 'clothing', regionId: 'al-eshreen', status: 'available' },
+    { id: '5', name: 'تاون تيم', rating: 4, address: 'شارع العشرين - أمام بركة', phone: '01234567890', mapUrl: 'https://maps.app.goo.gl/abcdef123456', categoryId: 'clothing', regionId: 'al-eshreen', status: 'available', offer: { title: 'خصم 20% لفترة محدودة', discount: 20, endsAt: getFutureDate(2)} },
     { id: '6', name: 'ورشة الأمانة', rating: 5, address: 'المنطقة الصناعية بالمطبعة', phone: '01123456789', mapUrl: 'https://maps.app.goo.gl/abcdef123456', categoryId: 'services', regionId: 'al-matbaa', status: 'busy' },
     { id: '7', name: 'صيدلية الطوابق', rating: 3, address: 'شارع فيصل، الطوابق', phone: '021234567', mapUrl: 'https://maps.app.goo.gl/abcdef123456', categoryId: 'pharmacies', regionId: 'al-tawabek' },
     { id: '8', name: 'مطعم حضرموت', rating: 5, address: 'شارع العشرين، فيصل', phone: '01012345678', mapUrl: 'https://maps.app.goo.gl/abcdef123456', categoryId: 'restaurants', regionId: 'al-eshreen', status: 'available' },
@@ -146,7 +159,7 @@ export const services: Service[] = [
     { id: 'p2', name: 'الأسطى محمود للسباكة', rating: 4, address: 'متجول في جميع مناطق فيصل', phone: '01101234567', mapUrl: '#', categoryId: 'plumbing', regionId: 'professions', status: 'busy', gallery: [{id: 'plumbing-1', hint: 'pipe leak'}, {id: 'plumbing-2', hint: 'new faucet'}] },
     { id: 'p3', name: 'كهربائي - محمد علي', rating: 4, address: 'متجول في جميع مناطق فيصل', phone: '01201234567', mapUrl: '#', categoryId: 'electrician', regionId: 'professions', status: 'available' },
     { id: 'p4', name: 'أبو فارس لأعمال النقاشة', rating: 5, address: 'متجول في جميع مناطق فيصل', phone: '01551234567', mapUrl: '#', categoryId: 'painter', regionId: 'professions', status: 'unavailable', gallery: [{id: 'painting-1', hint: 'wall painting'}] },
-    { id: 'p5', name: 'ورشة المعلم رضا للنجارة', rating: 4, address: 'شارع الملكة، كعبيش', phone: '01098765432', mapUrl: '#', categoryId: 'carpenter', regionId: 'professions', status: 'available', gallery: [{id: 'carpentry-1', hint: 'wooden door'}] },
+    { id: 'p5', name: 'ورشة المعلم رضا للنجارة', rating: 4, address: 'شارع الملكة، كعبيش', phone: '01098765432', mapUrl: '#', categoryId: 'carpenter', regionId: 'professions', status: 'available', gallery: [{id: 'carpentry-1', hint: 'wooden door'}], productImage: 'product-1' },
     { id: 'p6', name: 'مركز الصقر لصيانة الأجهزة', rating: 5, address: 'شارع اللاسلكي، المطبعة', phone: '01198765432', mapUrl: '#', categoryId: 'appliances', regionId: 'professions', status: 'available' },
 ];
 

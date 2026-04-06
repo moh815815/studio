@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import AddServiceForm from '@/components/add-service-form';
 
@@ -14,11 +14,11 @@ export default function AddServicePage() {
               <span className="sr-only">العودة للرئيسية</span>
             </Link>
           </Button>
-          <h1 className="font-headline text-4xl font-bold text-primary md:text-5xl">
-            أضف خدمتك أو محلك
+          <h1 className="font-headline text-4xl font-bold text-primary md:text-5xl flex items-center justify-center gap-2">
+            أضف خدمتك أو محلك <Sparkles className="text-accent"/>
           </h1>
           <p className="mt-2 text-lg text-muted-foreground">
-            املأ النموذج التالي لإضافة خدمتك إلى دليل فيصل الذكي.
+            املأ النموذج التالي لإضافة خدمتك إلى دليل فيصل الذكي، مع صورة احترافية.
           </p>
         </header>
 

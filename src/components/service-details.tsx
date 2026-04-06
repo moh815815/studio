@@ -13,6 +13,10 @@ import {
   Clock,
   Camera,
   BadgeCheck,
+  Facebook,
+  Copy,
+  FileImage,
+  FileText,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -24,12 +28,15 @@ import {
   DialogTitle,
   DialogTrigger,
   DialogFooter,
+  DialogDescription,
 } from '@/components/ui/dialog';
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from '@/components/ui/carousel';
+import { Textarea } from '@/components/ui/textarea';
 import type { Region, Category } from '@/lib/data';
 import type { getServiceById } from '@/lib/data';
 import placeholderImages from '@/lib/placeholder-images.json';
 import { useToast } from '@/hooks/use-toast';
+import FlashSale from './flash-sale';
 
 const WhatsAppIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg
@@ -77,20 +84,30 @@ type ServiceDetailsProps = {
 
 export default function ServiceDetails({ service, region, category }: ServiceDetailsProps) {
   const [pageUrl, setPageUrl] = useState('');
+  const [postText, setPostText] = useState('');
   const { toast } = useToast();
   
   useEffect(() => {
-    setPageUrl(window.location.href);
-  }, []);
+    // This ensures window is available, avoiding SSR issues.
+    const currentUrl = window.location.href;
+    setPageUrl(currentUrl);
 
-  const shareText = `مرحبا، أود مشاركة تفاصيل هذا المحل معك:\n\n*${service.name}*\n\n*العنوان:* ${service.address}\n*المنطقة:* ${service.regionName}\n\n*رابط على دليل فيصل الذكي:*\n${pageUrl}`;
-  const whatsappMessage = encodeURIComponent('السلام عليكم، أريد الاستفسار عن خدمة صيانة من دليل فيصل');
+    // Generate social media post text
+    const basePost = `📢 خدمة مميزة في دليل فيصل الذكي!\n\nنقدم لكم "${service.name}"، خياركم الأمثل لخدمات ${category.name} في منطقة ${region.name}.\n\n📍 العنوان: ${service.address}\n📞 للتواصل: ${service.phone}\n\n#${region.name.replace(/\s/g, '_')} #${category.name.replace(/\s/g, '_')} #دليل_فيصل\n\n${currentUrl}`;
+    const offerPost = service.offer ? `🎉 ${service.offer.title} 🎉\n\nاستفيدوا من عرضنا الخاص في "${service.name}" واحصلوا على خصم ${service.offer.discount}%! العرض لفترة محدودة.\n\n📍 العنوان: ${service.address}\n📞 للتواصل: ${service.phone}\n\n#${region.name.replace(/\s/g, '_')} #${category.name.replace(/\s/g, '_')} #عروض_فيصل\n\n${currentUrl}` : '';
+    setPostText(service.offer ? offerPost : basePost);
+  }, [service, region, category]);
+
+  const shareText = `مرحبا، أود مشاركة تفاصيل هذه الخدمة معك من دليل فيصل:\n\n*${service.name}*\n${service.offer ? `\n*${service.offer.title}*\n` : ''}\n*العنوان:* ${service.address}\n*المنطقة:* ${service.regionName}\n\n*رابط على دليل فيصل الذكي:*\n${pageUrl}`;
+  
+  const whatsappMessage = encodeURIComponent(service.offer ? `السلام عليكم، أريد الاستفسار عن "${service.offer.title}" من دليل فيصل` : `السلام عليكم، أريد الاستفسار عن خدمة من دليل فيصل`);
+
   const isMobile = service.phone.startsWith('01') && service.phone.length === 11;
   const whatsappPhoneNumber = isMobile ? '2' + service.phone : service.phone;
 
-  const handleDownloadQr = async () => {
+  const handleDownloadQr = async (format: 'png' | 'svg') => {
     if (!pageUrl) return;
-    const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=512x512&data=${encodeURIComponent(pageUrl)}`;
+    const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=512x512&data=${encodeURIComponent(pageUrl)}&format=${format}`;
     
     try {
         const response = await fetch(qrApiUrl);
@@ -100,7 +117,7 @@ export default function ServiceDetails({ service, region, category }: ServiceDet
         
         const link = document.createElement('a');
         link.href = blobUrl;
-        link.download = `${service.name}-QRCode.png`;
+        link.download = `${service.name}-QRCode.${format}`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -110,6 +127,14 @@ export default function ServiceDetails({ service, region, category }: ServiceDet
         window.open(qrApiUrl, '_blank');
     }
   };
+
+  const handleCopyPost = () => {
+    navigator.clipboard.writeText(postText);
+    toast({
+        title: 'تم النسخ بنجاح!',
+        description: 'يمكنك الآن لصق المنشور على فيسبوك.',
+    });
+  }
 
   return (
     <main className="flex min-h-screen w-full flex-col items-center bg-background">
@@ -135,6 +160,12 @@ export default function ServiceDetails({ service, region, category }: ServiceDet
             </div>
           </div>
         </header>
+
+        {service.offer && service.offer.endsAt && (
+            <section className="mb-8">
+                <FlashSale endsAt={service.offer.endsAt} title={service.offer.title} />
+            </section>
+        )}
 
         <Card className="overflow-hidden">
             <CardContent className="p-6">
@@ -241,10 +272,11 @@ export default function ServiceDetails({ service, region, category }: ServiceDet
         <section className="mt-8">
             <Card>
                 <CardHeader>
-                    <CardTitle className="font-headline text-2xl">أدوات صاحب المحل</CardTitle>
-                    <CardDescription>شارك محلك أو حمّل كود QR الخاص به.</CardDescription>
+                    <CardTitle className="font-headline text-2xl">أدوات صاحب المحل (Premium)</CardTitle>
+                    <CardDescription>شارك محلك أو حمّل كود QR الخاص به للطباعة.</CardDescription>
                 </CardHeader>
-                <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <CardContent className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    
                     <Dialog>
                         <DialogTrigger asChild>
                             <Button variant="outline" size="lg" className="w-full h-auto py-4 flex flex-col items-center justify-center gap-2" disabled={!pageUrl}>
@@ -255,14 +287,19 @@ export default function ServiceDetails({ service, region, category }: ServiceDet
                         <DialogContent className="sm:max-w-md">
                             <DialogHeader>
                                 <DialogTitle>كود QR الخاص بـِ "{service.name}"</DialogTitle>
+                                <DialogDescription>اختر الصيغة المناسبة للتحميل.</DialogDescription>
                             </DialogHeader>
                             <div className="flex items-center justify-center p-4 bg-white rounded-lg">
                                 {pageUrl && <Image src={`https://api.qrserver.com/v1/create-qr-code/?size=256x256&data=${encodeURIComponent(pageUrl)}`} alt={`QR code for ${service.name}`} width={256} height={256} loading="lazy" />}
                             </div>
-                            <DialogFooter className="sm:justify-center">
-                                <Button type="button" onClick={handleDownloadQr}>
-                                    <Download/>
+                            <DialogFooter className="grid grid-cols-2 gap-2 sm:justify-center">
+                                <Button type="button" onClick={() => handleDownloadQr('png')}>
+                                    <FileImage/>
                                     تحميل (PNG)
+                                </Button>
+                                <Button type="button" variant="secondary" onClick={() => handleDownloadQr('svg')}>
+                                    <FileText/>
+                                    تحميل (SVG)
                                 </Button>
                             </DialogFooter>
                         </DialogContent>
@@ -271,7 +308,7 @@ export default function ServiceDetails({ service, region, category }: ServiceDet
                     <Button 
                         asChild 
                         size="lg" 
-                        className="w-full h-auto py-4 flex flex-col items-center justify-center gap-2"
+                        className="w-full h-auto py-4 flex flex-col items-center justify-center gap-2 bg-green-600 hover:bg-green-700"
                         onClick={() => toast({ title: 'جاري التحضير للمشاركة عبر واتساب...' })}
                         disabled={!pageUrl}
                     >
@@ -280,6 +317,35 @@ export default function ServiceDetails({ service, region, category }: ServiceDet
                            <span>مشاركة على واتساب</span>
                         </a>
                     </Button>
+
+                    <Dialog>
+                        <DialogTrigger asChild>
+                             <Button variant="outline" size="lg" className="w-full h-auto py-4 flex flex-col items-center justify-center gap-2" disabled={!pageUrl}>
+                                <Facebook className="h-8 w-8"/>
+                                <span>توليد منشور فيسبوك</span>
+                            </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle>منشور فيسبوك جاهز</DialogTitle>
+                                <DialogDescription>
+                                    تم إنشاء هذا المنشور تلقائياً. يمكنك نسخه وتعديله ومشاركته على صفحتك.
+                                </DialogDescription>
+                            </DialogHeader>
+                            <Textarea
+                                readOnly
+                                value={postText}
+                                className="min-h-[200px] text-sm bg-muted/50"
+                            />
+                            <DialogFooter>
+                                <Button onClick={handleCopyPost}>
+                                    <Copy/>
+                                    نسخ المنشور
+                                </Button>
+                            </DialogFooter>
+                        </DialogContent>
+                    </Dialog>
+
                 </CardContent>
             </Card>
         </section>

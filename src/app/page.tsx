@@ -6,6 +6,7 @@ import AiSearch from '@/components/ai-search';
 import EmergencyServices from '@/components/emergency-services';
 import RegionFilter from '@/components/region-filter';
 import NotificationBanner from '@/components/notification-banner';
+import NearbyFinder from '@/components/nearby-finder';
 
 export default function Home() {
   return (
@@ -22,8 +23,12 @@ export default function Home() {
             </p>
           </header>
 
-          <section id="ai-search" className="mb-12">
+          <section id="ai-search" className="mb-8">
             <AiSearch />
+          </section>
+
+          <section id="nearby-finder" className="mb-12">
+            <NearbyFinder />
           </section>
 
           <EmergencyServices />

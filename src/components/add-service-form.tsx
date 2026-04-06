@@ -11,7 +11,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Card, CardContent, CardFooter } from '@/components/ui/card';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import {
   Form,
   FormControl,
@@ -36,6 +36,7 @@ const formSchema = z.object({
   address: z.string().min(10, { message: 'العنوان يجب أن يكون 10 أحرف على الأقل.' }),
   phone: z.string().regex(/^01[0125][0-9]{8}$/, { message: 'الرجاء إدخال رقم هاتف مصري صحيح.' }),
   mapUrl: z.string().url({ message: 'الرجاء إدخال رابط خرائط جوجل صحيح.' }).optional().or(z.literal('')),
+  productImage: z.string().url({message: 'الرجاء رفع صورة صحيحة.'}).optional().or(z.literal('')),
 });
 
 type FormSchema = z.infer<typeof formSchema>;
@@ -54,6 +55,7 @@ export default function AddServiceForm() {
       address: '',
       phone: '',
       mapUrl: '',
+      productImage: '',
     },
   });
 
@@ -86,122 +88,125 @@ export default function AddServiceForm() {
   };
 
   return (
-    <Card>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
-            <CardContent className="p-6">
-                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                    <FormField
-                        control={form.control}
-                        name="name"
-                        render={({ field }) => (
-                            <FormItem className="md:col-span-2">
-                            <FormLabel>اسم المحل/الخدمة</FormLabel>
-                            <FormControl>
-                                <Input placeholder="مثال: صيدلية الشفاء" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    
-                    <FormField
-                        control={form.control}
-                        name="regionId"
-                        render={({ field }) => (
-                            <FormItem>
-                            <FormLabel>المنطقة</FormLabel>
-                             <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                <FormControl>
-                                <SelectTrigger>
-                                    <SelectValue placeholder="اختر منطقة من فيصل" />
-                                </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                {regions.map(region => (
-                                    <SelectItem key={region.id} value={region.id}>{region.name}</SelectItem>
-                                ))}
-                                </SelectContent>
-                            </Select>
-                            <FormMessage />
-                            </FormItem>
-                        )}
-                    />
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
+        <div className="space-y-6">
+          <Card>
+              <CardContent className="p-6">
+                  <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                      <FormField
+                          control={form.control}
+                          name="name"
+                          render={({ field }) => (
+                              <FormItem className="md:col-span-2">
+                              <FormLabel>اسم المحل/الخدمة</FormLabel>
+                              <FormControl>
+                                  <Input placeholder="مثال: صيدلية الشفاء" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                              </FormItem>
+                          )}
+                      />
+                      
+                      <FormField
+                          control={form.control}
+                          name="regionId"
+                          render={({ field }) => (
+                              <FormItem>
+                              <FormLabel>المنطقة</FormLabel>
+                              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                  <FormControl>
+                                  <SelectTrigger>
+                                      <SelectValue placeholder="اختر منطقة من فيصل" />
+                                  </SelectTrigger>
+                                  </FormControl>
+                                  <SelectContent>
+                                  {regions.map(region => (
+                                      <SelectItem key={region.id} value={region.id}>{region.name}</SelectItem>
+                                  ))}
+                                  </SelectContent>
+                              </Select>
+                              <FormMessage />
+                              </FormItem>
+                          )}
+                      />
 
-                    <FormField
-                        control={form.control}
-                        name="categoryId"
-                        render={({ field }) => (
-                            <FormItem>
-                            <FormLabel>التصنيف</FormLabel>
-                             <Select onValueChange={field.onChange} value={field.value} disabled={!selectedRegion}>
-                                <FormControl>
-                                <SelectTrigger>
-                                    <SelectValue placeholder="اختر تصنيف الخدمة" />
-                                </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                {categories.map(cat => (
-                                    <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
-                                ))}
-                                </SelectContent>
-                            </Select>
-                            <FormMessage />
-                            </FormItem>
-                        )}
-                    />
+                      <FormField
+                          control={form.control}
+                          name="categoryId"
+                          render={({ field }) => (
+                              <FormItem>
+                              <FormLabel>التصنيف</FormLabel>
+                              <Select onValueChange={field.onChange} value={field.value} disabled={!selectedRegion}>
+                                  <FormControl>
+                                  <SelectTrigger>
+                                      <SelectValue placeholder="اختر تصنيف الخدمة" />
+                                  </SelectTrigger>
+                                  </FormControl>
+                                  <SelectContent>
+                                  {categories.map(cat => (
+                                      <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
+                                  ))}
+                                  </SelectContent>
+                              </Select>
+                              <FormMessage />
+                              </FormItem>
+                          )}
+                      />
 
-                    <FormField
-                        control={form.control}
-                        name="address"
-                        render={({ field }) => (
-                            <FormItem className="md:col-span-2">
-                            <FormLabel>العنوان بالتفصيل</FormLabel>
-                            <FormControl>
-                                <Textarea placeholder="اكتب العنوان هنا مع ذكر علامة مميزة..." {...field} />
-                            </FormControl>
-                            <FormMessage />
-                            </FormItem>
-                        )}
-                    />
+                      <FormField
+                          control={form.control}
+                          name="address"
+                          render={({ field }) => (
+                              <FormItem className="md:col-span-2">
+                              <FormLabel>العنوان بالتفصيل</FormLabel>
+                              <FormControl>
+                                  <Textarea placeholder="اكتب العنوان هنا مع ذكر علامة مميزة..." {...field} />
+                              </FormControl>
+                              <FormMessage />
+                              </FormItem>
+                          )}
+                      />
 
-                    <FormField
-                        control={form.control}
-                        name="phone"
-                        render={({ field }) => (
-                            <FormItem>
-                            <FormLabel>رقم الهاتف</FormLabel>
-                            <FormControl>
-                                <Input placeholder="01xxxxxxxxx" dir="ltr" className="text-right" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    
-                    <FormField
-                        control={form.control}
-                        name="mapUrl"
-                        render={({ field }) => (
-                            <FormItem>
-                            <FormLabel>رابط الموقع على جوجل ماب (اختياري)</FormLabel>
-                            <FormControl>
-                                <Input placeholder="https://maps.app.goo.gl/..." dir="ltr" className="text-right" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                </div>
-            </CardContent>
-            <CardFooter className="flex justify-end p-6 border-t">
-                <Button type="submit" disabled={isPending} size="lg">
-                    {isPending ? <LoaderCircle className="animate-spin" /> : <Send />}
-                    إرسال الطلب
-                </Button>
-            </CardFooter>
-        </form>
-      </Form>
-    </Card>
+                      <FormField
+                          control={form.control}
+                          name="phone"
+                          render={({ field }) => (
+                              <FormItem>
+                              <FormLabel>رقم الهاتف</FormLabel>
+                              <FormControl>
+                                  <Input placeholder="01xxxxxxxxx" dir="ltr" className="text-right" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                              </FormItem>
+                          )}
+                      />
+                      
+                      <FormField
+                          control={form.control}
+                          name="mapUrl"
+                          render={({ field }) => (
+                              <FormItem>
+                              <FormLabel>رابط الموقع على جوجل ماب (اختياري)</FormLabel>
+                              <FormControl>
+                                  <Input placeholder="https://maps.app.goo.gl/..." dir="ltr" className="text-right" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                              </FormItem>
+                          )}
+                      />
+                  </div>
+              </CardContent>
+          </Card>
+
+          <div className="flex justify-end p-6">
+              <Button type="submit" disabled={isPending} size="lg">
+                  {isPending ? <LoaderCircle className="animate-spin" /> : <Send />}
+                  إرسال الطلب
+              </Button>
+          </div>
+        </div>
+      </form>
+    </Form>
   );
 }

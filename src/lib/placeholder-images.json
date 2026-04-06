@@ -47,5 +47,12 @@
     "width": 800,
     "height": 600,
     "hint": "wall painting"
+  },
+  {
+    "id": "product-1",
+    "seed": "555",
+    "width": 800,
+    "height": 800,
+    "hint": "product photo"
   }
 ]
