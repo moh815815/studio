@@ -47,7 +47,6 @@ const addServiceSchema = z.object({
   address: z.string().min(10, { message: 'العنوان يجب أن يكون 10 أحرف على الأقل.' }),
   phone: z.string().regex(/^01[0125][0-9]{8}$/, { message: 'الرجاء إدخال رقم هاتف مصري صحيح.' }),
   mapUrl: z.string().url({ message: 'الرجاء إدخال رابط خرائط جوجل صحيح.' }).optional().or(z.literal('')),
-  productImage: z.string().url({message: 'الرجاء رفع صورة صحيحة.'}).optional().or(z.literal('')),
 });
 
 export async function addServiceAction(data: z.infer<typeof addServiceSchema>): Promise<AddServiceState> {

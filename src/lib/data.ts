@@ -26,7 +26,6 @@ export type Service = {
     isFeatured?: boolean;
     status?: 'available' | 'busy' | 'unavailable';
     gallery?: {id: string; hint: string}[];
-    productImage?: string; // Placeholder ID for the product image
     offer?: {
         title: string;
         discount: number;
@@ -159,7 +158,7 @@ export const services: Service[] = [
     { id: 'p2', name: 'الأسطى محمود للسباكة', rating: 4, address: 'متجول في جميع مناطق فيصل', phone: '01101234567', mapUrl: '#', categoryId: 'plumbing', regionId: 'professions', status: 'busy', gallery: [{id: 'plumbing-1', hint: 'pipe leak'}, {id: 'plumbing-2', hint: 'new faucet'}] },
     { id: 'p3', name: 'كهربائي - محمد علي', rating: 4, address: 'متجول في جميع مناطق فيصل', phone: '01201234567', mapUrl: '#', categoryId: 'electrician', regionId: 'professions', status: 'available' },
     { id: 'p4', name: 'أبو فارس لأعمال النقاشة', rating: 5, address: 'متجول في جميع مناطق فيصل', phone: '01551234567', mapUrl: '#', categoryId: 'painter', regionId: 'professions', status: 'unavailable', gallery: [{id: 'painting-1', hint: 'wall painting'}] },
-    { id: 'p5', name: 'ورشة المعلم رضا للنجارة', rating: 4, address: 'شارع الملكة، كعبيش', phone: '01098765432', mapUrl: '#', categoryId: 'carpenter', regionId: 'professions', status: 'available', gallery: [{id: 'carpentry-1', hint: 'wooden door'}], productImage: 'product-1' },
+    { id: 'p5', name: 'ورشة المعلم رضا للنجارة', rating: 4, address: 'شارع الملكة، كعبيش', phone: '01098765432', mapUrl: '#', categoryId: 'carpenter', regionId: 'professions', status: 'available', gallery: [{id: 'carpentry-1', hint: 'wooden door'}] },
     { id: 'p6', name: 'مركز الصقر لصيانة الأجهزة', rating: 5, address: 'شارع اللاسلكي، المطبعة', phone: '01198765432', mapUrl: '#', categoryId: 'appliances', regionId: 'professions', status: 'available' },
 ];
 

@@ -18,7 +18,7 @@ export default function AddServicePage() {
             أضف خدمتك أو محلك <Sparkles className="text-accent"/>
           </h1>
           <p className="mt-2 text-lg text-muted-foreground">
-            املأ النموذج التالي لإضافة خدمتك إلى دليل فيصل الذكي، مع صورة احترافية.
+            املأ النموذج التالي لإضافة خدمتك إلى دليل فيصل الذكي.
           </p>
         </header>
 
