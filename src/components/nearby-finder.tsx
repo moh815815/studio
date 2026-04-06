@@ -4,45 +4,50 @@ import Link from 'next/link';
 import { MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogClose,
+} from '@/components/ui/dialog';
 
 export default function NearbyFinder() {
   return (
-    <AlertDialog>
-      <AlertDialogTrigger asChild>
+    <Dialog>
+      <DialogTrigger asChild>
         <Button size="lg" className="w-full h-14 text-lg">
             <MapPin />
             المحلات القريبة مني (تجريبي)
         </Button>
-      </AlertDialogTrigger>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>محاكاة البحث عن قرب</AlertDialogTitle>
-          <AlertDialogDescription>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>محاكاة البحث عن قرب</DialogTitle>
+          <DialogDescription>
             هذه محاكاة لميزة البحث عن الخدمات القريبة. بناءً على أكثر المناطق حيوية في فيصل، نرشح لك استكشاف هذه المناطق:
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <div className="flex justify-center gap-4 py-4">
-            <AlertDialogAction asChild>
+          </DialogDescription>
+        </DialogHeader>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 py-4">
+            <DialogClose asChild>
+              <Button asChild variant="secondary" size="lg">
                 <Link href="/al-eshreen">منطقة العشرين</Link>
-            </AlertDialogAction>
-            <AlertDialogAction asChild>
+              </Button>
+            </DialogClose>
+            <DialogClose asChild>
+              <Button asChild variant="secondary" size="lg">
                 <Link href="/al-tawabek">منطقة الطوابق</Link>
-            </AlertDialogAction>
+              </Button>
+            </DialogClose>
         </div>
-        <AlertDialogFooter>
-          <AlertDialogCancel>إغلاق</AlertDialogCancel>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+        <DialogFooter>
+          <DialogClose asChild>
+            <Button variant="outline">إغلاق</Button>
+          </DialogClose>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
