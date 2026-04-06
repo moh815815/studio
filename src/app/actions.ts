@@ -1,6 +1,7 @@
 'use server';
 
 import { AIServiceSearch, type AIServiceSearchInput, type AIServiceSearchOutput } from '@/ai/flows/ai-service-search';
+import { generatePost, type GeneratePostInput } from '@/ai/flows/generate-post-flow';
 import { z } from 'zod';
 
 // --- SEARCH ---
@@ -73,5 +74,27 @@ export async function addServiceAction(data: z.infer<typeof addServiceSchema>): 
             success: false,
             error: "حدث خطأ غير متوقع أثناء إرسال طلبك. الرجاء المحاولة مرة أخرى.",
         }
+    }
+}
+
+// --- GENERATE POST ---
+type GeneratePostState = {
+    postText: string | null;
+    error: string | null;
+};
+
+export async function generatePostAction(
+    prevState: GeneratePostState,
+    data: GeneratePostInput
+): Promise<GeneratePostState> {
+    try {
+        const result = await generatePost(data);
+        if (result.postText) {
+            return { postText: result.postText, error: null };
+        }
+        return { postText: null, error: 'لم يتمكن الذكاء الاصطناعي من إنشاء منشور. حاول مرة أخرى.' };
+    } catch (e) {
+        console.error("Generate Post Error:", e);
+        return { postText: null, error: 'حدث خطأ أثناء الاتصال بمساعد الذكاء الاصطناعي.' };
     }
 }

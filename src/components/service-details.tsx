@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useActionState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import {
@@ -17,6 +17,7 @@ import {
   Copy,
   FileImage,
   FileText,
+  LoaderCircle,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -37,6 +38,7 @@ import type { getServiceById } from '@/lib/data';
 import placeholderImages from '@/lib/placeholder-images.json';
 import { useToast } from '@/hooks/use-toast';
 import FlashSale from './flash-sale';
+import { generatePostAction } from '@/app/actions';
 
 const WhatsAppIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg
@@ -84,19 +86,43 @@ type ServiceDetailsProps = {
 
 export default function ServiceDetails({ service, region, category }: ServiceDetailsProps) {
   const [pageUrl, setPageUrl] = useState('');
-  const [postText, setPostText] = useState('');
   const { toast } = useToast();
+  const [postState, generatePost, isGeneratingPost] = useActionState(generatePostAction, {
+    postText: null,
+    error: null,
+  });
   
   useEffect(() => {
     // This ensures window is available, avoiding SSR issues.
     const currentUrl = window.location.href;
     setPageUrl(currentUrl);
+  }, []);
 
-    // Generate social media post text
-    const basePost = `📢 خدمة مميزة في دليل فيصل الذكي!\n\nنقدم لكم "${service.name}"، خياركم الأمثل لخدمات ${category.name} في منطقة ${region.name}.\n\n📍 العنوان: ${service.address}\n📞 للتواصل: ${service.phone}\n\n#${region.name.replace(/\s/g, '_')} #${category.name.replace(/\s/g, '_')} #دليل_فيصل\n\n${currentUrl}`;
-    const offerPost = service.offer ? `🎉 ${service.offer.title} 🎉\n\nاستفيدوا من عرضنا الخاص في "${service.name}" واحصلوا على خصم ${service.offer.discount}%! العرض لفترة محدودة.\n\n📍 العنوان: ${service.address}\n📞 للتواصل: ${service.phone}\n\n#${region.name.replace(/\s/g, '_')} #${category.name.replace(/\s/g, '_')} #عروض_فيصل\n\n${currentUrl}` : '';
-    setPostText(service.offer ? offerPost : basePost);
-  }, [service, region, category]);
+  useEffect(() => {
+    if (postState.error) {
+        toast({
+            variant: "destructive",
+            title: 'خطأ في إنشاء المنشور',
+            description: postState.error,
+        });
+    }
+  }, [postState.error, toast]);
+
+  const handleGeneratePost = () => {
+    if (!pageUrl) return;
+
+    const input = {
+      serviceName: service.name,
+      categoryName: category.name,
+      regionName: region.name,
+      address: service.address,
+      phone: service.phone,
+      pageUrl: pageUrl,
+      offerTitle: service.offer?.title,
+      offerDiscount: service.offer?.discount,
+    };
+    generatePost(input);
+  };
 
   const shareText = `مرحبا، أود مشاركة تفاصيل هذه الخدمة معك من دليل فيصل:\n\n*${service.name}*\n${service.offer ? `\n*${service.offer.title}*\n` : ''}\n*العنوان:* ${service.address}\n*المنطقة:* ${service.regionName}\n\n*رابط على دليل فيصل الذكي:*\n${pageUrl}`;
   
@@ -129,11 +155,13 @@ export default function ServiceDetails({ service, region, category }: ServiceDet
   };
 
   const handleCopyPost = () => {
-    navigator.clipboard.writeText(postText);
-    toast({
-        title: 'تم النسخ بنجاح!',
-        description: 'يمكنك الآن لصق المنشور على فيسبوك.',
-    });
+    if (postState.postText) {
+        navigator.clipboard.writeText(postState.postText);
+        toast({
+            title: 'تم النسخ بنجاح!',
+            description: 'يمكنك الآن لصق المنشور على فيسبوك.',
+        });
+    }
   }
 
   return (
@@ -318,7 +346,7 @@ export default function ServiceDetails({ service, region, category }: ServiceDet
                         </a>
                     </Button>
 
-                    <Dialog>
+                    <Dialog onOpenChange={(open) => { if (open) handleGeneratePost() }}>
                         <DialogTrigger asChild>
                              <Button variant="outline" size="lg" className="w-full h-auto py-4 flex flex-col items-center justify-center gap-2" disabled={!pageUrl}>
                                 <Facebook className="h-8 w-8"/>
@@ -327,18 +355,25 @@ export default function ServiceDetails({ service, region, category }: ServiceDet
                         </DialogTrigger>
                         <DialogContent>
                             <DialogHeader>
-                                <DialogTitle>منشور فيسبوك جاهز</DialogTitle>
+                                <DialogTitle>منشور فيسبوك جاهز بواسطة الذكاء الاصطناعي</DialogTitle>
                                 <DialogDescription>
-                                    تم إنشاء هذا المنشور تلقائياً. يمكنك نسخه وتعديله ومشاركته على صفحتك.
+                                    تم إنشاء هذا المنشور خصيصاً لك. يمكنك نسخه وتعديله ومشاركته على صفحتك.
                                 </DialogDescription>
                             </DialogHeader>
-                            <Textarea
-                                readOnly
-                                value={postText}
-                                className="min-h-[200px] text-sm bg-muted/50"
-                            />
+                            {isGeneratingPost ? (
+                                <div className="min-h-[200px] flex justify-center items-center flex-col gap-4 bg-muted/50 rounded-md">
+                                    <LoaderCircle className="h-8 w-8 animate-spin text-primary" />
+                                    <p className="text-muted-foreground">جاري إنشاء المنشور...</p>
+                                </div>
+                            ) : (
+                                <Textarea
+                                    readOnly
+                                    value={postState.postText || postState.error || ''}
+                                    className="min-h-[200px] text-sm bg-muted/50"
+                                />
+                            )}
                             <DialogFooter>
-                                <Button onClick={handleCopyPost}>
+                                <Button onClick={handleCopyPost} disabled={isGeneratingPost || !postState.postText}>
                                     <Copy/>
                                     نسخ المنشور
                                 </Button>
