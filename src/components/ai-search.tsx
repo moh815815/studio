@@ -1,13 +1,13 @@
 'use client';
 
-import { useFormState, useFormStatus } from 'react-dom';
+import { useFormStatus } from 'react-dom';
 import { searchServicesAction } from '@/app/actions';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Search, LoaderCircle, Frown } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
 import { Badge } from './ui/badge';
-import { useEffect } from 'react';
+import { useActionState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 
 const initialState = {
@@ -27,7 +27,7 @@ function SubmitButton() {
 }
 
 export default function AiSearch() {
-  const [state, formAction] = useFormState(searchServicesAction, initialState);
+  const [state, formAction] = useActionState(searchServicesAction, initialState);
   const { toast } = useToast();
 
   useEffect(() => {
