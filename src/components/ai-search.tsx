@@ -4,7 +4,7 @@ import { useFormStatus } from 'react-dom';
 import { searchServicesAction } from '@/app/actions';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Search, LoaderCircle, Frown } from 'lucide-react';
+import { Search, LoaderCircle, Sparkles } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
 import { Badge } from './ui/badge';
 import { useActionState, useEffect } from 'react';
@@ -62,15 +62,14 @@ export default function AiSearch() {
         </form>
         
         <div className="mt-6">
-          {state.message && !state.results.length && !state.error && (
-             <div className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/30 p-8 text-center text-muted-foreground">
-                <Frown className="mb-2 h-10 w-10"/>
-                <p>{state.message}</p>
+          {state.message && !state.error && (
+             <div className="flex items-start gap-3 rounded-lg border border-primary/20 bg-primary/5 p-4 mb-4">
+                <Sparkles className="h-6 w-6 text-primary flex-shrink-0 mt-1"/>
+                <p className="text-primary/90 font-medium">{state.message}</p>
              </div>
           )}
           {state.results && state.results.length > 0 && (
             <div className="space-y-4">
-              <h3 className="font-headline text-lg font-medium">نتائج البحث:</h3>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 {state.results.map((service, index) => (
                   <div key={index} className="rounded-lg border bg-background/50 p-4 transition-colors hover:bg-secondary">

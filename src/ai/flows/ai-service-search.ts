@@ -2,11 +2,12 @@
 /**
  * @fileOverview This file implements a Genkit flow to assist users in searching for services
  * in the Faisal area based on natural language queries. It uses a tool to lookup services
- * and returns relevant recommendations.
+ * and returns relevant recommendations with a conversational message.
  *
  * - AIServiceSearch - A function that handles natural language service search.
  * - AIServiceSearchInput - The input type for the AIServiceSearch function.
  * - AIServiceSearchOutput - The return type for the AIServiceSearch function.
+ * - AIServiceRecommendation - The type for a single service recommendation.
  */
 
 import { ai } from '@/ai/genkit';
@@ -31,13 +32,24 @@ const AIServiceRecommendationSchema = z.object({
   location: z.string().describe('The exact location or address of the service.'),
   region: z.string().describe('The geographical region where the service is located.'),
 });
+export type AIServiceRecommendation = z.infer<typeof AIServiceRecommendationSchema>;
+
 
 /**
- * Defines the output schema for the AI service search flow.
- * It is an array of service recommendations.
+ * Defines the schema for the tool's output.
  */
-const AIServiceSearchOutputSchema = z.array(AIServiceRecommendationSchema);
-export type AIServiceSearchOutput = z.infer<typeof AIServiceSearchOutputSchema>;
+const ServiceToolOutputSchema = z.array(AIServiceRecommendationSchema);
+
+/**
+ * Defines the final output schema for the entire Genkit flow.
+ * It includes the results and a conversational message.
+ */
+const AIFlowOutputSchema = z.object({
+    results: z.array(AIServiceRecommendationSchema).describe("The list of service recommendations found."),
+    message: z.string().describe("A friendly, conversational message in Egyptian Arabic to the user summarizing the results. If no results are found, explain why and suggest trying a different search. If results are found, briefly mention what was found."),
+});
+export type AIServiceSearchOutput = z.infer<typeof AIFlowOutputSchema>;
+
 
 /**
  * Defines a tool to search for services based on type, name, and optional region.
@@ -52,7 +64,7 @@ const searchServicesTool = ai.defineTool(
       region: z.string().optional().describe('The geographical region to search within Faisal (e.g., الطوابق, المريوطية).'),
       name: z.string().optional().describe('The specific name of a shop or service.'),
     }),
-    outputSchema: AIServiceSearchOutputSchema,
+    outputSchema: ServiceToolOutputSchema,
   },
   async (input) => {
     console.log(`Tool: searchServices called with: ${JSON.stringify(input)}`);
@@ -114,10 +126,10 @@ const searchServicesTool = ai.defineTool(
 const serviceSearchPrompt = ai.definePrompt({
   name: 'serviceSearchPrompt',
   input: { schema: AIServiceSearchInputSchema },
-  output: { schema: AIServiceSearchOutputSchema },
+  output: { schema: AIFlowOutputSchema },
   tools: [searchServicesTool],
-  prompt: `You are an intelligent service assistant for "Faisal Smart Guide" in Egypt.
-Your goal is to help users find services in the Faisal area based on their natural language queries.
+  prompt: `You are an intelligent and friendly service assistant for "Faisal Smart Guide" in Egypt.
+Your goal is to help users find services in the Faisal area based on their natural language queries, and respond in a conversational way.
 
 Here are the available regions in Faisal: ${regions.map(r => r.name).join(', ')}.
 Here are the available service categories: صيدليات (pharmacies), سوبر ماركت (supermarkets), محلات ملابس (clothing stores), خدمات (general services), مطاعم (restaurants).
@@ -125,14 +137,15 @@ Here are the available service categories: صيدليات (pharmacies), سوبر
 When a user asks for a service, carefully identify the 'serviceType' (category), 'region', and/or the specific 'name' of the shop from their query.
 Then, use the 'searchServices' tool with the identified parameters to find relevant services.
 
-- If the user provides a specific shop name (e.g., "صيدلية العزبي"), prioritize searching by that 'name'.
-- If a 'serviceType' is mentioned (e.g., "صيدليات"), use that for filtering.
-- If a 'region' is mentioned (e.g., "في الطوابق"), use that for filtering.
-- You can combine these filters. If no region is mentioned, search across all of Faisal for the given service or name.
-
 User query: {{{query}}}
 
-Respond with a JSON array of service recommendations, ensuring each object contains 'name', 'category', 'location', and 'region'. If the tool returns an empty array, return an empty array.`,
+After getting the results from the tool, formulate a response in JSON format.
+1.  The 'results' field should contain the array of services returned by the tool.
+2.  The 'message' field should contain a friendly, conversational response in Egyptian Arabic.
+    - If you found results, your message could be something like "بالتأكيد! وجدت لك هذه الخدمات في منطقة..." or "تفضل، هذه هي النتائج التي تطابق بحثك:".
+    - If no results are found, create a helpful message like "عفواً، لم أجد خدمات تطابق بحثك. هل يمكنك تجربة البحث بكلمات مختلفة أو في منطقة أخرى؟"
+    - Be natural, helpful, and friendly. Your message is the main thing the user will read.
+`,
 });
 
 /**
@@ -143,12 +156,10 @@ const aiServiceSearchFlow = ai.defineFlow(
   {
     name: 'aiServiceSearchFlow',
     inputSchema: AIServiceSearchInputSchema,
-    outputSchema: AIServiceSearchOutputSchema,
+    outputSchema: AIFlowOutputSchema,
   },
   async (input) => {
     const { output } = await serviceSearchPrompt(input);
-    // The LLM is instructed to use the tool and return its output directly if successful.
-    // Therefore, `output` directly corresponds to AIServiceSearchOutputSchema.
     return output!;
   }
 );
@@ -156,7 +167,7 @@ const aiServiceSearchFlow = ai.defineFlow(
 /**
  * Wrapper function to call the AI service search Genkit flow.
  * @param input The user's natural language query.
- * @returns A promise that resolves to an array of service recommendations.
+ * @returns A promise that resolves to an object with results and a message.
  */
 export async function AIServiceSearch(input: AIServiceSearchInput): Promise<AIServiceSearchOutput> {
   return aiServiceSearchFlow(input);
