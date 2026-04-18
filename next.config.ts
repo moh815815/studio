@@ -1,36 +1,17 @@
-import type {NextConfig} from 'next';
-
-const nextConfig: NextConfig = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   output: 'export',
   typescript: {
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: true, // يتجاهل أخطاء التايب سكريبت
   },
   eslint: {
-    ignoreDuringBuilds: true,
+    ignoreDuringBuilds: true, // يتجاهل أخطاء التنسيق
   },
   images: {
     unoptimized: true,
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'placehold.co',
-        port: '',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'images.unsplash.com',
-        port: '',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'picsum.photos',
-        port: '',
-        pathname: '/**',
-      },
-    ],
   },
+  // هذا الجزء هو الحل لمشكلتك
+  trailingSlash: true, 
 };
 
-export default nextConfig;
+module.exports = nextConfig;
