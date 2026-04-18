@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useActionState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import {
@@ -38,7 +38,6 @@ import type { getServiceById } from '@/lib/data';
 import placeholderImages from '@/lib/placeholder-images.json';
 import { useToast } from '@/hooks/use-toast';
 import FlashSale from './flash-sale';
-import { generatePostAction } from '@/app/actions';
 
 const WhatsAppIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg
@@ -87,42 +86,12 @@ type ServiceDetailsProps = {
 export default function ServiceDetails({ service, region, category }: ServiceDetailsProps) {
   const [pageUrl, setPageUrl] = useState('');
   const { toast } = useToast();
-  const [postState, generatePost, isGeneratingPost] = useActionState(generatePostAction, {
-    postText: null,
-    error: null,
-  });
   
   useEffect(() => {
     // This ensures window is available, avoiding SSR issues.
     const currentUrl = window.location.href;
     setPageUrl(currentUrl);
   }, []);
-
-  useEffect(() => {
-    if (postState.error) {
-        toast({
-            variant: "destructive",
-            title: 'خطأ في إنشاء المنشور',
-            description: postState.error,
-        });
-    }
-  }, [postState.error, toast]);
-
-  const handleGeneratePost = () => {
-    if (!pageUrl) return;
-
-    const input = {
-      serviceName: service.name,
-      categoryName: category.name,
-      regionName: region.name,
-      address: service.address,
-      phone: service.phone,
-      pageUrl: pageUrl,
-      offerTitle: service.offer?.title,
-      offerDiscount: service.offer?.discount,
-    };
-    generatePost(input);
-  };
 
   const shareText = `مرحبا، أود مشاركة تفاصيل هذه الخدمة معك من دليل فيصل:\n\n*${service.name}*\n${service.offer ? `\n*${service.offer.title}*\n` : ''}\n*العنوان:* ${service.address}\n*المنطقة:* ${service.regionName}\n\n*رابط على دليل فيصل الذكي:*\n${pageUrl}`;
   
@@ -153,16 +122,6 @@ export default function ServiceDetails({ service, region, category }: ServiceDet
         window.open(qrApiUrl, '_blank');
     }
   };
-
-  const handleCopyPost = () => {
-    if (postState.postText) {
-        navigator.clipboard.writeText(postState.postText);
-        toast({
-            title: 'تم النسخ بنجاح!',
-            description: 'يمكنك الآن لصق المنشور على فيسبوك.',
-        });
-    }
-  }
 
   return (
     <main className="flex min-h-screen w-full flex-col items-center bg-background">
@@ -303,7 +262,7 @@ export default function ServiceDetails({ service, region, category }: ServiceDet
                     <CardTitle className="font-headline text-2xl">أدوات صاحب المحل (Premium)</CardTitle>
                     <CardDescription>شارك محلك أو حمّل كود QR الخاص به للطباعة.</CardDescription>
                 </CardHeader>
-                <CardContent className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     
                     <Dialog>
                         <DialogTrigger asChild>
@@ -345,42 +304,6 @@ export default function ServiceDetails({ service, region, category }: ServiceDet
                            <span>مشاركة على واتساب</span>
                         </a>
                     </Button>
-
-                    <Dialog onOpenChange={(open) => { if (open) handleGeneratePost() }}>
-                        <DialogTrigger asChild>
-                             <Button variant="outline" size="lg" className="w-full h-auto py-4 flex flex-col items-center justify-center gap-2" disabled={!pageUrl}>
-                                <Facebook className="h-8 w-8"/>
-                                <span>توليد منشور فيسبوك</span>
-                            </Button>
-                        </DialogTrigger>
-                        <DialogContent>
-                            <DialogHeader>
-                                <DialogTitle>منشور فيسبوك جاهز بواسطة الذكاء الاصطناعي</DialogTitle>
-                                <DialogDescription>
-                                    تم إنشاء هذا المنشور خصيصاً لك. يمكنك نسخه وتعديله ومشاركته على صفحتك.
-                                </DialogDescription>
-                            </DialogHeader>
-                            {isGeneratingPost ? (
-                                <div className="min-h-[200px] flex justify-center items-center flex-col gap-4 bg-muted/50 rounded-md">
-                                    <LoaderCircle className="h-8 w-8 animate-spin text-primary" />
-                                    <p className="text-muted-foreground">جاري إنشاء المنشور...</p>
-                                </div>
-                            ) : (
-                                <Textarea
-                                    readOnly
-                                    value={postState.postText || postState.error || ''}
-                                    className="min-h-[200px] text-sm bg-muted/50"
-                                />
-                            )}
-                            <DialogFooter>
-                                <Button onClick={handleCopyPost} disabled={isGeneratingPost || !postState.postText}>
-                                    <Copy/>
-                                    نسخ المنشور
-                                </Button>
-                            </DialogFooter>
-                        </DialogContent>
-                    </Dialog>
-
                 </CardContent>
             </Card>
         </section>

@@ -1,5 +1,4 @@
 import { config } from 'dotenv';
 config();
 
-import '@/ai/flows/ai-service-search.ts';
-import '@/ai/flows/generate-post-flow.ts';
+// This file is intentionally left blank to support static export.

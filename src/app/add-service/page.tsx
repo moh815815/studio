@@ -1,30 +1,24 @@
 import Link from 'next/link';
-import { ArrowRight, Sparkles } from 'lucide-react';
+import { ArrowRight, Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import AddServiceForm from '@/components/add-service-form';
 
 export default function AddServicePage() {
   return (
-    <main className="flex min-h-screen w-full flex-col items-center bg-background">
-      <div className="w-full max-w-2xl p-4 md:p-8">
-        <header className="relative mb-8 text-center">
-          <Button asChild variant="outline" size="icon" className="absolute top-0 start-0">
+    <main className="flex min-h-screen w-full flex-col items-center justify-center bg-background">
+      <div className="w-full max-w-2xl p-4 text-center md:p-8">
+        <Info className="mx-auto h-12 w-12 text-primary" />
+        <h1 className="mt-4 font-headline text-3xl font-bold text-primary md:text-4xl">
+            ميزة إضافة الخدمات غير متاحة
+        </h1>
+        <p className="mt-2 text-lg text-muted-foreground">
+            هذه الميزة غير مفعلة في النسخة الحالية للموقع.
+        </p>
+        <Button asChild className="mt-8">
             <Link href="/">
-              <ArrowRight className="h-4 w-4" />
-              <span className="sr-only">العودة للرئيسية</span>
+                <ArrowRight className="h-4 w-4" />
+                العودة للرئيسية
             </Link>
-          </Button>
-          <h1 className="font-headline text-4xl font-bold text-primary md:text-5xl flex items-center justify-center gap-2">
-            أضف خدمتك أو محلك <Sparkles className="text-accent"/>
-          </h1>
-          <p className="mt-2 text-lg text-muted-foreground">
-            املأ النموذج التالي لإضافة خدمتك إلى دليل فيصل الذكي.
-          </p>
-        </header>
-
-        <section>
-          <AddServiceForm />
-        </section>
+        </Button>
       </div>
     </main>
   );
